@@ -206,100 +206,6 @@
                                 }
                             })
                         }
-
-                        function selectsupplier() {
-                            jQuery.ajax({
-                                url: "../inc/ajax/operator/checksupplier.php",
-                                data: {
-                                    supplier: $("#search_supplier_val").val(),
-                                    ptype: $("#search_ptype_val_hide").val()
-                                },
-                                type: "POST",
-                                success: function(response) {
-                                    $("#div-ptype").html(response);
-                                    selectcatesecond()
-                                },
-                                error: function() {}
-                            });
-                        }
-
-                        function selectcatesecond() {
-                            jQuery.ajax({
-                                url: "../inc/ajax/operator/checkptype.php",
-                                data: {
-                                    supplier: $("#search_supplier_val").val(),
-                                    ptype: $("#search_ptype_val").val(),
-                                    catesecond: $("#search_catesecond_val_hide").val()
-                                },
-                                type: "POST",
-                                success: function(response) {
-                                    if (response) {
-                                        $("#div-catesecond").html(response);
-                                        selectdropoff()
-                                    }
-                                },
-                                error: function() {}
-                            });
-                        }
-
-                        function selectdropoff() {
-                            jQuery.ajax({
-                                url: "../inc/ajax/operator/checkdropoff.php",
-                                data: {
-                                    supplier: $("#search_supplier_val").val(),
-                                    ptype: $("#search_ptype_val").val(),
-                                    catesecond: $("#search_catesecond_val").val(),
-                                    dropoff: $("#search_dropoff_val_hide").val()
-                                },
-                                type: "POST",
-                                success: function(response) {
-                                    if (response) {
-                                        $("#div-dropoff").html(response);
-                                    }
-                                },
-                                error: function() {}
-                            });
-                        }
-
-                        function create_operator() {
-                            var supplier = document.getElementById('search_supplier_val').value;
-                            var ptype = document.getElementById('search_ptype_val').value;
-                            var catesecond = document.getElementById('search_catesecond_val').value;
-                            var dropoff = document.getElementById('search_dropoff_val_hide').value;
-                            var travel_from = document.getElementById('search_travel_date_from').value;
-                            var travel_to = document.getElementById('search_travel_date_to').value;
-
-                            if(supplier != '' && ptype != '' && catesecond != '' && dropoff != ''){
-                                jQuery.ajax({
-                                    url: "../inc/ajax/operator/create_operator.php",
-                                    data: {
-                                        id: $("#result").val(),
-                                        supplier: supplier,
-                                        ptype: ptype,
-                                        catesecond: catesecond,
-                                        dropoff: dropoff,
-                                        travel_from: travel_from,
-                                        travel_to: travel_to
-                                    },
-                                    type: "POST",
-                                    success: function(response) {
-                                        if (response) {
-                                            Swal.fire({
-                                                title: "สร้างโอเปอเรเตอร์สำเร็จ!",
-                                                type: "success"
-                                            }).then(function() {
-                                                // $(text_operator).html(response)
-                                                window.open(response, '_blank');
-                                                // location.href = "<?php // echo $_SERVER['REQUEST_URI']; ?>";
-                                            });
-                                        }
-                                    },
-                                    error: function() {}
-                                });
-                            }else{
-                                Swal.fire('สร้างโอเปอเรเตอร์ไม่สำเร็จ!', 'กรุณาเลือกสินค้า', 'error')
-                            }
-                        }
                     </script>
 
                     <?php
@@ -368,36 +274,6 @@
                                             <label for="search_travel_date_to">วันที่เที่ยว / วันที่เช็คเอาท์ (ถึง)</label>
                                             <input type="text" class="form-control" id="search_travel_date_to" name="search_travel_date_to" placeholder="" value="<?php echo $search_travel_date_to_val; ?>" readonly>
                                         </div>
-                                        <div class="col-md-2 mb-3">
-                                            <label for="search_supplier_val">ซัพพลายเออร์</label>
-                                            <select class="custom-select" id="search_supplier_val" name="search_supplier_val" onchange="selectsupplier()">
-                                                <option value="0" <?php if ($search_supplier_val == 0) {
-                                                                        echo "selected";
-                                                                    } ?>>ทั้งหมด</option>
-                                                <?php
-                                                $query_supplier = "SELECT * FROM supplier WHERE id > '0' AND status = '1' ";
-                                                $query_supplier .= " ORDER BY company ASC";
-                                                $result_supplier = mysqli_query($mysqli_p, $query_supplier);
-                                                while ($row_supplier = mysqli_fetch_array($result_supplier, MYSQLI_ASSOC)) {
-                                                ?>
-                                                    <option value="<?php echo $row_supplier["id"]; ?>" <?php if ($search_supplier_val == $row_supplier["id"]) {
-                                                                                                            echo "selected";
-                                                                                                        } ?>>
-                                                        <?php echo $row_supplier["company"]; ?></option>
-                                                <?php
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 mb-3" id="div-ptype">
-                                            <!-- function: checksupplier -->
-                                        </div>
-                                        <div class="col-md-2 mb-3" id="div-catesecond">
-                                            <!-- function: checkcatesecond -->
-                                        </div>
-                                        <div class="col-md-2 mb-3" id="div-dropoff">
-                                            <!-- function: checkdropoff -->
-                                        </div>
                                     </div>
                                     <button class="btn btn-primary" type="submit"><i class="ti-search"></i>&nbsp;&nbsp;ค้นหา</button>
                                     <button class="btn btn-primary" type="button" onclick="window.location.href='./?mode=operator/list'"><i class="ti-reload"></i>&nbsp;&nbsp;ล้างค่าใหม่</button>
@@ -425,19 +301,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Create Report -->
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <button class="btn btn-success" onclick="create_operator();">สร้างโอเปอเรเตอร์</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <?php
-                        // echo $search_supplier_val . ' - ' . $search_ptype_val . ' - ' . $search_catesecond_val . ' - ' . $search_dropoff_val;
-                    ?>
 
                     <!-- Table Responsive -->
                     <!-- <h6 class="card-subtitle">Description</h6> -->

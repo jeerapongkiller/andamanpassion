@@ -54,6 +54,15 @@
                     <!-- User profile and search -->
                     <!-- ============================================================== -->
                     <ul class="navbar-nav my-lg-0">
+                                            <!-- ============================================================== -->
+                        <!-- Comment -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="openQuestion('<?php echo $_GET['mode']; ?>')"> <i class="fas fa-question-circle"></i></a>
+                        </li>
+                        <!-- ============================================================== -->
+                        <!-- End Comment -->
+                        <!-- ============================================================== -->
                         <!-- ============================================================== -->
                         <!-- User Profile -->
                         <!-- ============================================================== -->
@@ -107,6 +116,9 @@
                         </li>
                         <li <?php if(strstr($_GET["mode"], "operator/")){ echo "class=\"active\""; } ?>> <a class="waves-effect waves-dark" href="./?mode=operator/list"
                                 aria-expanded="false"><i class="ti-clipboard"></i><span class="hide-menu">โอเปอเรเตอร์</span></a>
+                        </li>
+                        <li <?php if(strstr($_GET["mode"], "workshop/")){ echo "class=\"active\""; } ?>> <a class="waves-effect waves-dark" href="./?mode=workshop/list"
+                                aria-expanded="false"><i class="ti-clipboard"></i><span class="hide-menu">ใบงานรถ</span></a>
                         </li>
                         <li <?php if(strstr($_GET["mode"], "ar/")){ echo "class=\"active\""; } ?>> <a class="waves-effect waves-dark" href="./?mode=ar/list"
                                 aria-expanded="false"><i class="ti-clipboard"></i><span class="hide-menu">AR (สร้างใบแจ้งหนี้)</span></a>

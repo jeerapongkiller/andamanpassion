@@ -218,6 +218,13 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 time: false
             });
 
+            // Workshop car
+            $('#search_travel_date_car').bootstrapMaterialDatePicker({
+                format: 'YYYY-MM-DD',
+                weekStart: 0,
+                time: false
+            });
+
             // Date Form Bill Page
             $('#search_bi_date_to').bootstrapMaterialDatePicker({
                 format: 'YYYY-MM-DD',
@@ -679,7 +686,7 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     "scrollX": true
                 });
 
-                // ar list - responsive table
+                // invoice list - responsive table
                 $('#invoice-table').DataTable({
                     "order": [
                         [2, 'desc']
@@ -781,6 +788,28 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     }
                 })
             });
+
+            function openQuestion(page){
+                jQuery.ajax({
+                    url: "../inc/ajax/question/page.php",
+                    data: {
+                        page: page,
+                    },
+                    type: "POST",
+                    success: function(response) {
+                        Swal.fire({
+                            type: 'question',
+                            title: 'วิธีใช้งาน',
+                            // text: 'Something went wrong!',
+                            html: response,
+                            width: '80%',
+                            showConfirmButton: false,
+                            showCloseButton: true
+                        })
+                    },
+                    error: function() {}
+                });
+            }
         </script>
 
         <!-- ============================================================== -->
