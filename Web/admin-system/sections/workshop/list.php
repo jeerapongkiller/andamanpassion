@@ -44,7 +44,7 @@
                                 <form class="needs-validation" method="post" id="frmsearch" name="frmsearch" novalidate>
                                     <div class="form-row">
                                         <div class="col-md-2 mb-3">
-                                            <label for="search_travel_date_car">วันที่เที่ยว / วันที่เช็คอิน (จาก)</label>
+                                            <label for="search_travel_date_car">วันที่เที่ยว / วันที่เช็คอิน</label>
                                             <input type="text" class="form-control" id="search_travel_date_car" name="search_travel_date_car" placeholder="" value="<?php echo $search_travel_date_car_val; ?>" readonly>
                                         </div>
                                     </div>
