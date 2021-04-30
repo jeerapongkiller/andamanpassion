@@ -225,6 +225,13 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 time: false
             });
 
+            // Payment detail Date paid car
+            $('#pm_date_paid').bootstrapMaterialDatePicker({
+                format: 'YYYY-MM-DD',
+                weekStart: 0,
+                time: false
+            });
+
             // Date Form Bill Page
             $('#search_bi_date_to').bootstrapMaterialDatePicker({
                 format: 'YYYY-MM-DD',
@@ -560,6 +567,20 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     "scrollX": true
                 });
 
+                // booking detail - responsive table
+                $('#paid-table').DataTable({
+                    "order": [
+                        [2, 'asc']
+                    ],
+                    columnDefs: [{
+                        targets: [1],
+                        orderable: false
+                    }],
+                    "displayLength": 10,
+                    "searching": false,
+                    "scrollX": true
+                });
+
                 // opertor list - responsive table (Tours)
                 $('#booking-table-1').DataTable({
                     "order": [
@@ -738,6 +759,9 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     checkCustomertype();
                     checkVoucher();
                     checkCancel();
+                }
+                if (str_mode.indexOf("booking/payment-detail") >= 0) {
+                    // checkProducts();
                 }
                 if (str_mode.indexOf("booking/product-detail") >= 0) {
                     inputHide();

@@ -77,381 +77,6 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
         <!-- ============================================================== -->
         <div class="row">
 
-            <script type="text/javascript">
-                /* script for enter to submit form */
-                document.onkeydown = function(evt) {
-                    var keyCode = evt ? (evt.which ? evt.which : evt.keyCode) : event.keyCode;
-                    if (keyCode == 13) {
-                        document.frmsearch.submit();
-                    }
-                }
-
-                function checkCustomertype() {
-                    var bo_id = document.getElementById('bo_id').value;
-                    var agentdiv = document.getElementById("agentdiv");
-                    var customerdiv = document.getElementById("customerdiv");
-
-                    if (bo_id > 0) {
-                        var customertype = document.getElementById('bo_customertype').value;
-                    } else {
-                        var customertype = $('[name="bo_customertype"]:checked').val();
-                    }
-
-                    if (customertype == 1) {
-                        agentdiv.style.display = "";
-                        customerdiv.style.display = "none";
-                    } else {
-                        agentdiv.style.display = "none";
-                        customerdiv.style.display = "";
-                    }
-
-                    return true;
-                }
-
-                function checkVoucher() {
-                    var bo_voucher_no = document.getElementById('bo_voucher_no');
-                    // bo_voucher_no.value = bo_voucher_no.value.replace(/[^A-Za-z0-9]+/, '');
-                    var bo_voucher_no_duplicate = document.getElementById('bo_voucher_no_duplicate');
-
-                    jQuery.ajax({
-                        url: "../inc/ajax/booking/checkvoucherno.php",
-                        data: {
-                            bo_voucher_no: $("#bo_voucher_no").val(),
-                            bo_id: $("#bo_id").val()
-                        },
-                        type: "POST",
-                        success: function(response) {
-                            // alert(response);
-
-                            if (response == "duplicate") {
-                                bo_voucher_no_duplicate.value = false;
-                                $("#bo_voucher_no_feedback").html("กรุณาระบุ Voucher No. ใหม่ เพราะ Voucher No. ที่ระบุถูกใช้งานแล้ว");
-
-                                Swal.fire({
-                                    // position: 'top-end',
-                                    type: 'error',
-                                    // title: '',
-                                    text: 'กรุณาระบุ Voucher No. ใหม่ เพราะ Voucher No. ที่ระบุถูกใช้งานแล้ว',
-                                    showConfirmButton: false,
-                                    timer: 2000
-                                });
-                            } else if (response == "true") {
-                                bo_voucher_no_duplicate.value = true;
-                                $("#bo_voucher_no_feedback").html("กรุณาระบุ Voucher No.");
-                            } else {
-                                bo_voucher_no_duplicate.value = false;
-                                $("#bo_voucher_no_feedback").html("กรุณาระบุ Voucher No. ใหม่ เพราะยังไม่ได้ระบุ Voucher No. หรือ Voucher No. ที่ระบุถูกใช้งานแล้ว");
-                            }
-                        },
-                        error: function() {}
-                    });
-                }
-
-                function deleteProduct(prodval, bookval, prodtype) {
-                    Swal.fire({
-                        type: 'warning',
-                        title: 'คุณแน่ใจไหม?',
-                        text: "คุณต้องการลบข้อมูลนี้ใช่หรือไม่?",
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'ใช่ ลบข้อมูล!',
-                        cancelButtonText: 'ปิด'
-                    }).then((result) => {
-                        if (result.value) {
-                            jQuery.ajax({
-                                url: "../inc/ajax/booking/" + prodtype + ".php",
-                                data: {
-                                    prodval: prodval,
-                                    bookval: bookval
-                                },
-                                type: "POST",
-                                success: function(response) {
-                                    Swal.fire({
-                                        title: "ลบข้อมูลเสร็จสิ้น!",
-                                        text: "ข้อมูลที่คุณเลือกถูกลบออกจากระบบแล้ว",
-                                        type: "success"
-                                    }).then(function() {
-                                        // $("#test-delete-email").html(response)
-                                        location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
-                                        // setTimeout(function () {
-                                        //     window.location.href = "<?php // echo $_SERVER['REQUEST_URI']; 
-                                                                        ?>";
-                                        // }, 6000);
-                                    });
-                                },
-                                error: function() {
-                                    Swal.fire('ลบข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
-                                }
-                            });
-                        }
-                    })
-                    return true;
-                }
-
-                function restoreProduct(prodval, bookval, id_type, catesecond, prodtype) {
-                    Swal.fire({
-                        type: 'warning',
-                        title: 'คุณแน่ใจไหม?',
-                        text: "คุณต้องการคืนข้อมูลนี้ใช่หรือไม่?",
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'ใช่ คืนข้อมูล!',
-                        cancelButtonText: 'ปิด'
-                    }).then((result) => {
-                        if (result.value) {
-                            jQuery.ajax({
-                                url: "../inc/ajax/booking/" + prodtype + ".php",
-                                data: {
-                                    prodval: prodval,
-                                    bookval: bookval,
-                                    id_type: id_type,
-                                    catesecond: catesecond
-                                },
-                                type: "POST",
-                                success: function(response) {
-                                    if (response == 0) {
-                                        Swal.fire({
-                                            title: "คืนข้อมูลเสร็จสิ้น!",
-                                            text: "ข้อมูลที่คุณเลือกคืนเข้าระบบแล้ว",
-                                            type: "success"
-                                        }).then(function() {
-                                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
-                                        });
-                                    } else {
-                                        Swal.fire('สินค้าซ้ำ คืนข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
-                                    }
-                                },
-                                error: function() {
-                                    Swal.fire('คืนข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
-                                }
-                            });
-                        }
-                    })
-                    return true;
-                }
-
-                function check_confirm_name(prodval, bookval, prodtype) {
-                    var check_confirm = document.getElementById('check_confirm' + prodval)
-                    if (!check_confirm.checked) {
-                        (async () => {
-                            const inputOptions = new Promise((resolve) => {
-                                setTimeout(() => {
-                                    resolve({
-                                        '3': 'แก้ใขชื่อผู้ยืนยัน',
-                                        '2': 'ยกเลิกการยืนยัน'
-                                    })
-                                }, 1000)
-                            })
-                            const {
-                                value: status
-                            } = await Swal.fire({
-                                type: "warning",
-                                title: 'ยกเลิก/แก้ใข สถานะการยืนยัน',
-                                input: 'radio',
-                                inputOptions: inputOptions,
-                                inputValidator: (value) => {
-                                    if (!value) {
-                                        return 'กรุณาเลือกรายการ!'
-                                    }
-                                }
-                            })
-                            if (!status) {
-                                check_confirm.checked = true
-                            }
-                            if (status == 3) {
-                                Swal.fire({
-                                    title: 'สถานะการยืนยัน',
-                                    text: 'ชื่อผู้ยืนยัน',
-                                    input: 'text',
-                                    showCancelButton: true,
-                                    showCloseButton: true,
-                                    confirmButtonText: 'บันทึกข้อมูล',
-                                    cancelButtonText: 'ปิด',
-                                    inputValidator: (result) => {
-                                        if (!result) {
-                                            return 'กรุณาเลือกรายการ!'
-                                        }
-                                    }
-                                }).then((result) => {
-                                    if (result.value) {
-                                        jQuery.ajax({
-                                            url: "../inc/ajax/booking/" + prodtype + ".php",
-                                            data: {
-                                                prodval: prodval,
-                                                confirm_name: result.value,
-                                                bookval: bookval,
-                                                status: '3'
-                                            },
-                                            type: "POST",
-                                            success: function(response) {
-                                                Swal.fire({
-                                                    title: "บันทึกข้อมูลสำเร็จ!",
-                                                    type: "success"
-                                                }).then(function() {
-                                                    location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
-                                                });
-                                            },
-                                            error: function() {
-                                                Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
-                                            }
-                                        });
-                                    } else {
-                                        check_confirm.checked = true
-                                    }
-                                })
-                            }
-                            if (status == 2) {
-                                Swal.fire({
-                                    type: 'warning',
-                                    title: 'ยกเลิกสถานะการยืนยัน?',
-                                    text: "ยกเลิกสถานะการยืนยันใช่หรือไม่?",
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
-                                    confirmButtonText: 'ใช่ ยกเลิกสถานะ!',
-                                    cancelButtonText: 'ปิด'
-                                }).then((result) => {
-                                    if (result.value) {
-                                        jQuery.ajax({
-                                            url: "../inc/ajax/booking/" + prodtype + ".php",
-                                            data: {
-                                                prodval: prodval,
-                                                bookval: bookval,
-                                                status: '2'
-                                            },
-                                            type: "POST",
-                                            success: function(response) {
-                                                // alert(response)
-                                                Swal.fire({
-                                                    title: "ยกเลิกสถานะการยืนยันสำเร็จ!",
-                                                    type: "success"
-                                                }).then(function() {
-                                                    location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
-                                                });
-                                            },
-                                            error: function() {
-                                                Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
-                                                exit
-                                            }
-                                        });
-                                    } else {
-                                        check_confirm.checked = true
-                                    }
-                                })
-                            }
-                        })()
-                    } else {
-                        Swal.fire({
-                            title: 'สถานะการยืนยัน',
-                            text: 'ชื่อผู้ยืนยัน',
-                            input: 'text',
-                            showCancelButton: true,
-                            showCloseButton: true,
-                            confirmButtonText: 'บันทึกข้อมูล',
-                            cancelButtonText: 'ปิด',
-                            inputValidator: (result) => {
-                                if (!result) {
-                                    return 'กรุณาเลือกรายการ!'
-                                }
-                            }
-                        }).then((result) => {
-                            if (result.value) {
-                                jQuery.ajax({
-                                    url: "../inc/ajax/booking/" + prodtype + ".php",
-                                    data: {
-                                        prodval: prodval,
-                                        confirm_name: result.value,
-                                        bookval: bookval,
-                                        status: '1'
-                                    },
-                                    type: "POST",
-                                    success: function(response) {
-                                        // alert(response)
-                                        Swal.fire({
-                                            title: "บันทึกข้อมูลสำเร็จ!",
-                                            type: "success"
-                                        }).then(function() {
-                                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
-                                        });
-                                    },
-                                    error: function() {
-                                        Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
-                                    }
-                                });
-                            } else {
-                                //Swal.fire('กรุณาใส่ชื่อผู้ยืนยัน!', 'กรุณาลองใหม่อีกครั้ง', 'error')
-                                check_confirm.checked = false
-                                // .then(function() {
-                                //     location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
-                                // });
-                            }
-                        })
-                    }
-                    return true;
-                }
-
-                function check_confirm_email(prodtype) {
-                    var remark_email = document.getElementById('remark_email').value
-                    var bo_id = document.getElementById('bo_id').value
-                    var id_email = [];
-                    var els = document.getElementsByName('check_email[]');
-                    for (var i = 0; i < els.length; i++) {
-                        if (els[i].checked) {
-                            id_email.push(els[i].value);
-                        }
-                    }
-                    if (id_email == '') {
-                        Swal.fire('ส่งอีเมล์ไม่สำเร็จ!', 'กรุณาเลือกสินค้า', 'error')
-                        exit
-                    }
-
-                    Swal.fire({
-                        type: 'warning',
-                        title: 'คุณแน่ใจไหม?',
-                        text: "คุณต้องการส่งอีเมล์ใช่หรือไม่?",
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'ส่งอีเมล์!',
-                        cancelButtonText: 'ปิด'
-                    }).then((result) => {
-                        if (result.value) {
-                            // alert(remark_email+' - '+bo_id+' - '+id_email)
-                            jQuery.ajax({
-                                url: "../inc/ajax/booking/" + prodtype + ".php",
-                                data: {
-                                    remark_email: remark_email,
-                                    bo_id: bo_id,
-                                    id_email: id_email
-                                },
-                                type: "POST",
-                                success: function(response) {
-                                    // $("#test-mail").html(response)
-                                    Swal.fire({
-                                            title: "ส่งอีเมล์เสร็จสิ้น!",
-                                            text: "ข้อมูลที่คุณเลือกถูกส่งอีเมล์แล้ว",
-                                            type: "success"
-                                        })
-                                        .then(function() {
-                                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
-                                            // setTimeout(function () {
-                                            //     window.location.href = "<?php // echo $_SERVER['REQUEST_URI']; 
-                                                                            ?>";
-                                            // }, 6000);
-                                        });
-                                },
-                                error: function() {
-                                    Swal.fire('ส่งอีเมล์ไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
-                                }
-                            });
-                        }
-                    })
-                    return true;
-                }
-            </script>
-
             <!-- Validation Form -->
             <div class="col-12">
                 <div class="card">
@@ -774,6 +399,86 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
             if (!empty($bo_id)) {
             ?>
 
+                <!-- Payment Table -->
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title"> ธุรกรรมการชำระเงิน</h4>
+                            <!-- <h6 class="card-subtitle">Description</h6> -->
+                            <a href="<?php echo './?mode=booking/payment-detail&booking=' . $bo_id; ?>" class="btn btn-info m-t-10 m-r-15"><i class="fa fa-plus-circle"></i> เพิ่มธุรกรรม </a>
+                            <a href="#print" onclick="printPayment(<?php echo $bo_id; ?>, 'print-payment')" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a>
+                            <!-- <a href="<?php echo './?mode=booking/print-payment&id=' . $bo_id; ?>" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a> -->
+                            <div class="table-responsive m-t-10">
+                                <table id="paid-table" class="table display table-bordered table-striped no-wrap" style="width:100%">
+                                    <thead>
+                                        <tr align="center">
+                                            <th>สถานะ</th>
+                                            <th>เลขใบเสร็จ</th>
+                                            <th>สินค้า (วันที่เที่ยว)</th>
+                                            <th>วันที่ชำระ</th>
+                                            <th>จำนวนเงิน</th>
+                                            <th>แก้ไข / ดู</th>
+                                            <th>ยกเลิก / ลบ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $date_travel = '';
+                                        $sum_paid = 0;
+                                        $query_pb = "SELECT PB.*,
+                                                     BK.id as bkID, BK.voucher_no as bkVoucher,
+                                                     BP.id as bpID, BP.products_category_second as bpPCS, BP.products_type as bpType, 
+                                                     BP.travel_date as bpTravel_date, BP.checkin_date as bpCheckin_date,
+                                                     PCS.id as pcsID, PCS.name as pcsName
+                                                     FROM payments_booking PB
+                                                     LEFT JOIN booking BK
+                                                        ON PB.booking = BK.id
+                                                     LEFT JOIN booking_products BP
+                                                        ON PB.booking_products = BP.id
+                                                     LEFT JOIN products_category_second PCS
+                                                        ON BP.products_category_second = PCS.id
+                                                     WHERE PB.booking = '" . $bo_id . "' ";
+                                        $procedural_statement_pb = mysqli_prepare($mysqli_p, $query_pb);
+                                        mysqli_stmt_execute($procedural_statement_pb);
+                                        $result_pb = mysqli_stmt_get_result($procedural_statement_pb);
+                                        while ($row_pb = mysqli_fetch_array($result_pb, MYSQLI_ASSOC)) {
+                                            $status_class = $row_pb["status"] == 1 ? 'success' : 'danger';
+                                            $status_txt = $row_pb["status"] == 1 ? 'ออนไลน์' : 'ยกเลิก';
+                                            $date_travel = $row_pb["bpType"] == 4 ? $row_pb["bpCheckin_date"] : $row_pb["bpTravel_date"];
+                                            $name_payment = $row_pb["booking_products"] == 0 ? 'ชำระทั้งหมด' : $row_pb['pcsName'] . '<br />(' . date("d F Y", strtotime($date_travel)) . ')';
+                                            $sum_paid = $row_pb["status"] == 1 ? $sum_paid + $row_pb['amount_paid'] : $sum_paid;
+                                        ?>
+                                            <tr>
+                                                <td align="center"> <span class="label label-<?php echo $status_class; ?>"><?php echo $status_txt; ?></span> </td>
+                                                <td align="center" style="font-weight: bold"> <?php echo $row_pb['receip_no']; ?> </td>
+                                                <td align="center"> <?php echo $name_payment; ?> </td>
+                                                <td align="center"> <?php echo $row_pb['date_paid']; ?> </td>
+                                                <td align="center"> <?php echo number_format($row_pb['amount_paid']); ?> </td>
+                                                <td align="center" width="7%">
+                                                    <a href="./?mode=booking/payment-detail&booking=<?php echo $bo_id; ?>&id=<?php echo $row_pb["id"]; ?>" title="Edit"><i class="fas fa-edit" style="color:#0D84DE"></i></a>
+                                                </td>
+                                                <td align="center" width="7%">
+                                                    <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
+                                                        <?php if ($row_pb['status'] == '2' && $row_pb["trash_deleted"] == '1') { ?>
+                                                            <a href="#restore" onclick="restorePayment('<?php echo $row_pb['id']; ?>', '<?php echo $row_pb['booking']; ?>', 'restorepayment');" title="Restore"><i class="ti-reload" style="color:#0CDE66"></i></a>
+                                                        <?php } else { ?>
+                                                            <a href="#deleted" onclick="deletePayment('<?php echo $row_pb['id']; ?>', '<?php echo $row_pb['booking']; ?>', 'deletepayment');" title="Delete"><i class="fas fa-trash-alt" style="color:#FF0000"></i></a>
+                                                        <?php } ?>
+                                                    <?php } ?>
+                                                </td>
+                                                <input type="hidden" id="type_pay<?php echo $row_pb["id"]; ?>" name="type_pay[]" value="<?php echo $row_pb["accounts"]; ?>">
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Print Payment Hidden -->
+                <input type="hidden" id="sum_paid" name="sum_paid" value="<?php echo $sum_paid; ?>">
+                <input type="hidden" id="total_balance" name="total_balance" value="">
+
                 <!-- Validation Form -->
                 <div class="col-12">
                     <div class="card">
@@ -856,7 +561,7 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                     $checkout_date = date("d F Y", strtotime($row_products["checkout_date"]));
                                     $price_latest = ($bo_agent == 0) ? number_format($row_products["price_latest"]) : '-';
                                     // $price_latest = number_format($row_products["price_latest"]);
-                                    $price_total = $row_products["trash_deleted"] != 1 ? $price_total + $row_products["price_latest"] : $price_total;;
+                                    $price_total = $row_products["trash_deleted"] != 1 ? $price_total + $row_products["price_latest"] : $price_total;
                                 } else {
                                     $travel_date = "ไม่ระบุวันที่";
                                     $checkin_date = "ไม่ระบุวันที่";
@@ -1043,12 +748,12 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                                         </div>
                                                         <div class="modal-body">
                                                             <p style="font-size: 1.2em;">
-                                                                <?php 
+                                                                <?php
                                                                 $m_pickup = ($row_products["pickup"] > 0) ? get_value("place", "id", "name", $row_products["pickup"], $mysqli_p) : 'N/A';
                                                                 $m_dropoff = ($row_products["dropoff"] > 0) ? get_value("place", "id", "name", $row_products["dropoff"], $mysqli_p) : 'N/A';
                                                                 $m_zones = ($row_products["zones"] > 0) ? get_value("zones", "id", "name", $row_products["zones"], $mysqli_p) : 'N/A';
                                                                 $m_roomno = (!empty($row_products["roomno"])) ? $row_products["roomno"]  : 'N/A';
-                                                                if($row_products["ptypeid"] == 1 || $row_products["ptypeid"] == 2){
+                                                                if ($row_products["ptypeid"] == 1 || $row_products["ptypeid"] == 2) {
                                                                     $m_transfer = ($row_products["transfer"] == 1) ? 'ใช่' : 'ไม่ใช่';
                                                                     echo "<span style='font-weight: bold;'> วันที่เที่ยว / วันที่เดินทาง : </span>" . $travel_date . "</br>";
                                                                     echo "<span style='font-weight: bold;'> สินค้า : </span>" . $row_products["pcsname"] . "</br>";
@@ -1058,12 +763,12 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                                                     echo "<span style='font-weight: bold;'> สถานที่ส่ง : </span>" . $m_dropoff . "</br>";
                                                                     echo "<span style='font-weight: bold;'> โซน : </span>" . $m_zones . "</br>";
                                                                     echo "<span style='font-weight: bold;'> ห้องพัก : </span>" . $m_roomno . "</br>";
-                                                                    if($row_products["foreigner"] == 1){
+                                                                    if ($row_products["foreigner"] == 1) {
                                                                         echo "<span style='font-weight: bold;'> ชาวต่างชาติ : </span> มี </br>";
                                                                         echo "<span style='font-weight: bold;'> จำนวนคน : </span>" . $row_products["foreigner_no"] . "</br>";
                                                                     }
                                                                     echo "<span style='font-weight: bold;'> ราคา : </span>" . $price_latest;
-                                                                } else if($row_products["ptypeid"] == 3) { 
+                                                                } else if ($row_products["ptypeid"] == 3) {
                                                                     echo "<span style='font-weight: bold;'> วันที่เที่ยว / วันที่เดินทาง : </span>" . $travel_date . "</br>";
                                                                     echo "<span style='font-weight: bold;'> สินค้า : </span>" . $row_products["pcsname"] . "</br>";
                                                                     echo "<span style='font-weight: bold;'> ผู้ใหญ๋/เด็ก/ทารก/FOC : </span>" . $row_products["adults"] . "/" . $row_products["children"] . "/" . $row_products["infant"] . "/" . $row_products["foc"] . "</br>";
@@ -1076,7 +781,7 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                                                     echo "<span style='font-weight: bold;'> เวลารับ : </span>" . $row_products["pickup_time"] . "</br>";
                                                                     echo "<span style='font-weight: bold;'> เวลาส่ง : </span>" . $row_products["dropoff_time"] . "</br>";
                                                                     echo "<span style='font-weight: bold;'> ราคา : </span>" . $price_latest;
-                                                                } else if($row_products["ptypeid"] == 4) { 
+                                                                } else if ($row_products["ptypeid"] == 4) {
                                                                     echo "<span style='font-weight: bold;'> วันที่เช็คอิน : </span>" . $checkin_date . "</br>";
                                                                     echo "<span style='font-weight: bold;'> วันที่เช็คเอาท์ : </span>" . $checkout_date . "</br>";
                                                                     echo "<span style='font-weight: bold;'> สินค้า : </span>" . $row_products["pcsname"] . "</br>";
@@ -1266,10 +971,15 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
         $price_total = !empty($price_total) ? $price_total : '0';
         $price_paid = !empty($price_paid) ? $price_paid : '0';
         $price_balance = !empty($price_balance) ? $price_balance : '0';
+        if ($sum_paid > 0) {
+            $price_paid = $sum_paid;
+            $price_balance = $price_total - $price_paid;
+        }
         ?>
         document.getElementById('price_total').innerHTML = '<?php echo number_format($price_total); ?>';
         document.getElementById('price_paid').innerHTML = '<?php echo number_format($price_paid); ?>';
         document.getElementById('price_balance').innerHTML = '<?php echo number_format($price_balance); ?>';
+        document.getElementById('total_balance').value = <?php echo $price_balance; ?>;
 
         function checkCancel() {
             var check_cancel = document.getElementById('check_cancel')
@@ -1277,5 +987,482 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
             if (check_cancel.value > '0') {
                 bo_status.disabled = true
             }
+        }
+
+        function printPayment(bookval, prodtype) {
+            var sum_paid = document.getElementById('sum_paid');
+            var total_balance = document.getElementById('total_balance');
+            var type_arr = [];
+            var type_pay = document.getElementsByName('type_pay[]');
+            for (var i = 0; i < type_pay.length; i++) {
+                type_arr.push(type_pay[i].value);
+            }
+            jQuery.ajax({
+                url: "../inc/ajax/booking/" + prodtype + ".php",
+                data: {
+                    bookval: bookval,
+                    sum_paid: sum_paid.value,
+                    total_balance: total_balance.value,
+                    type_arr: type_arr
+                },
+                type: "POST",
+                success: function(response) {
+                    $("#test-mail").html(response)
+                },
+                error: function() {
+                    Swal.fire('ลบข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                }
+            });
+        }
+
+        function deletePayment(payval, bookval, prodtype) {
+            Swal.fire({
+                type: 'warning',
+                title: 'คุณแน่ใจไหม?',
+                text: "คุณต้องการลบข้อมูลนี้ใช่หรือไม่?",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ใช่ ลบข้อมูล!',
+                cancelButtonText: 'ปิด'
+            }).then((result) => {
+                if (result.value) {
+                    jQuery.ajax({
+                        url: "../inc/ajax/booking/" + prodtype + ".php",
+                        data: {
+                            payval: payval,
+                            bookval: bookval
+                        },
+                        type: "POST",
+                        success: function(response) {
+                            Swal.fire({
+                                title: "ลบข้อมูลเสร็จสิ้น!",
+                                text: "ข้อมูลที่คุณเลือกถูกลบออกจากระบบแล้ว",
+                                type: "success"
+                            }).then(function() {
+                                location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                            });
+                        },
+                        error: function() {
+                            Swal.fire('ลบข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                        }
+                    });
+                }
+            })
+            return true;
+        }
+
+        function restorePayment(payval, bookval, prodtype) {
+            Swal.fire({
+                type: 'warning',
+                title: 'คุณแน่ใจไหม?',
+                text: "คุณต้องการคืนข้อมูลนี้ใช่หรือไม่?",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ใช่ คืนข้อมูล!',
+                cancelButtonText: 'ปิด'
+            }).then((result) => {
+                if (result.value) {
+                    jQuery.ajax({
+                        url: "../inc/ajax/booking/" + prodtype + ".php",
+                        data: {
+                            payval: payval,
+                            bookval: bookval
+                        },
+                        type: "POST",
+                        success: function(response) {
+                            if (response == 0) {
+                                Swal.fire({
+                                    title: "คืนข้อมูลเสร็จสิ้น!",
+                                    text: "ข้อมูลที่คุณเลือกคืนเข้าระบบแล้ว",
+                                    type: "success"
+                                }).then(function() {
+                                    location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                                });
+                            } else {
+                                Swal.fire('สินค้าซ้ำ คืนข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                            }
+                        },
+                        error: function() {
+                            Swal.fire('คืนข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                        }
+                    });
+                }
+            })
+            return true;
+        }
+
+        /* script for enter to submit form */
+        document.onkeydown = function(evt) {
+            var keyCode = evt ? (evt.which ? evt.which : evt.keyCode) : event.keyCode;
+            if (keyCode == 13) {
+                document.frmsearch.submit();
+            }
+        }
+
+        function checkCustomertype() {
+            var bo_id = document.getElementById('bo_id').value;
+            var agentdiv = document.getElementById("agentdiv");
+            var customerdiv = document.getElementById("customerdiv");
+
+            if (bo_id > 0) {
+                var customertype = document.getElementById('bo_customertype').value;
+            } else {
+                var customertype = $('[name="bo_customertype"]:checked').val();
+            }
+
+            if (customertype == 1) {
+                agentdiv.style.display = "";
+                customerdiv.style.display = "none";
+            } else {
+                agentdiv.style.display = "none";
+                customerdiv.style.display = "";
+            }
+
+            return true;
+        }
+
+        function checkVoucher() {
+            var bo_voucher_no = document.getElementById('bo_voucher_no');
+            // bo_voucher_no.value = bo_voucher_no.value.replace(/[^A-Za-z0-9]+/, '');
+            var bo_voucher_no_duplicate = document.getElementById('bo_voucher_no_duplicate');
+
+            jQuery.ajax({
+                url: "../inc/ajax/booking/checkvoucherno.php",
+                data: {
+                    bo_voucher_no: $("#bo_voucher_no").val(),
+                    bo_id: $("#bo_id").val()
+                },
+                type: "POST",
+                success: function(response) {
+                    // alert(response);
+
+                    if (response == "duplicate") {
+                        bo_voucher_no_duplicate.value = false;
+                        $("#bo_voucher_no_feedback").html("กรุณาระบุ Voucher No. ใหม่ เพราะ Voucher No. ที่ระบุถูกใช้งานแล้ว");
+
+                        Swal.fire({
+                            // position: 'top-end',
+                            type: 'error',
+                            // title: '',
+                            text: 'กรุณาระบุ Voucher No. ใหม่ เพราะ Voucher No. ที่ระบุถูกใช้งานแล้ว',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    } else if (response == "true") {
+                        bo_voucher_no_duplicate.value = true;
+                        $("#bo_voucher_no_feedback").html("กรุณาระบุ Voucher No.");
+                    } else {
+                        bo_voucher_no_duplicate.value = false;
+                        $("#bo_voucher_no_feedback").html("กรุณาระบุ Voucher No. ใหม่ เพราะยังไม่ได้ระบุ Voucher No. หรือ Voucher No. ที่ระบุถูกใช้งานแล้ว");
+                    }
+                },
+                error: function() {}
+            });
+        }
+
+        function deleteProduct(prodval, bookval, prodtype) {
+            Swal.fire({
+                type: 'warning',
+                title: 'คุณแน่ใจไหม?',
+                text: "คุณต้องการลบข้อมูลนี้ใช่หรือไม่?",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ใช่ ลบข้อมูล!',
+                cancelButtonText: 'ปิด'
+            }).then((result) => {
+                if (result.value) {
+                    jQuery.ajax({
+                        url: "../inc/ajax/booking/" + prodtype + ".php",
+                        data: {
+                            prodval: prodval,
+                            bookval: bookval
+                        },
+                        type: "POST",
+                        success: function(response) {
+                            Swal.fire({
+                                title: "ลบข้อมูลเสร็จสิ้น!",
+                                text: "ข้อมูลที่คุณเลือกถูกลบออกจากระบบแล้ว",
+                                type: "success"
+                            }).then(function() {
+                                // $("#test-delete-email").html(response)
+                                location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                                // setTimeout(function () {
+                                //     window.location.href = "<?php // echo $_SERVER['REQUEST_URI']; 
+                                                                ?>";
+                                // }, 6000);
+                            });
+                        },
+                        error: function() {
+                            Swal.fire('ลบข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                        }
+                    });
+                }
+            })
+            return true;
+        }
+
+        function restoreProduct(prodval, bookval, id_type, catesecond, prodtype) {
+            Swal.fire({
+                type: 'warning',
+                title: 'คุณแน่ใจไหม?',
+                text: "คุณต้องการคืนข้อมูลนี้ใช่หรือไม่?",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ใช่ คืนข้อมูล!',
+                cancelButtonText: 'ปิด'
+            }).then((result) => {
+                if (result.value) {
+                    jQuery.ajax({
+                        url: "../inc/ajax/booking/" + prodtype + ".php",
+                        data: {
+                            prodval: prodval,
+                            bookval: bookval,
+                            id_type: id_type,
+                            catesecond: catesecond
+                        },
+                        type: "POST",
+                        success: function(response) {
+                            if (response == 0) {
+                                Swal.fire({
+                                    title: "คืนข้อมูลเสร็จสิ้น!",
+                                    text: "ข้อมูลที่คุณเลือกคืนเข้าระบบแล้ว",
+                                    type: "success"
+                                }).then(function() {
+                                    location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                                });
+                            } else {
+                                Swal.fire('สินค้าซ้ำ คืนข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                            }
+                        },
+                        error: function() {
+                            Swal.fire('คืนข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                        }
+                    });
+                }
+            })
+            return true;
+        }
+
+        function check_confirm_name(prodval, bookval, prodtype) {
+            var check_confirm = document.getElementById('check_confirm' + prodval)
+            if (!check_confirm.checked) {
+                (async () => {
+                    const inputOptions = new Promise((resolve) => {
+                        setTimeout(() => {
+                            resolve({
+                                '3': 'แก้ใขชื่อผู้ยืนยัน',
+                                '2': 'ยกเลิกการยืนยัน'
+                            })
+                        }, 1000)
+                    })
+                    const {
+                        value: status
+                    } = await Swal.fire({
+                        type: "warning",
+                        title: 'ยกเลิก/แก้ใข สถานะการยืนยัน',
+                        input: 'radio',
+                        inputOptions: inputOptions,
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'กรุณาเลือกรายการ!'
+                            }
+                        }
+                    })
+                    if (!status) {
+                        check_confirm.checked = true
+                    }
+                    if (status == 3) {
+                        Swal.fire({
+                            title: 'สถานะการยืนยัน',
+                            text: 'ชื่อผู้ยืนยัน',
+                            input: 'text',
+                            showCancelButton: true,
+                            showCloseButton: true,
+                            confirmButtonText: 'บันทึกข้อมูล',
+                            cancelButtonText: 'ปิด',
+                            inputValidator: (result) => {
+                                if (!result) {
+                                    return 'กรุณาเลือกรายการ!'
+                                }
+                            }
+                        }).then((result) => {
+                            if (result.value) {
+                                jQuery.ajax({
+                                    url: "../inc/ajax/booking/" + prodtype + ".php",
+                                    data: {
+                                        prodval: prodval,
+                                        confirm_name: result.value,
+                                        bookval: bookval,
+                                        status: '3'
+                                    },
+                                    type: "POST",
+                                    success: function(response) {
+                                        Swal.fire({
+                                            title: "บันทึกข้อมูลสำเร็จ!",
+                                            type: "success"
+                                        }).then(function() {
+                                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                                        });
+                                    },
+                                    error: function() {
+                                        Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                                    }
+                                });
+                            } else {
+                                check_confirm.checked = true
+                            }
+                        })
+                    }
+                    if (status == 2) {
+                        Swal.fire({
+                            type: 'warning',
+                            title: 'ยกเลิกสถานะการยืนยัน?',
+                            text: "ยกเลิกสถานะการยืนยันใช่หรือไม่?",
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'ใช่ ยกเลิกสถานะ!',
+                            cancelButtonText: 'ปิด'
+                        }).then((result) => {
+                            if (result.value) {
+                                jQuery.ajax({
+                                    url: "../inc/ajax/booking/" + prodtype + ".php",
+                                    data: {
+                                        prodval: prodval,
+                                        bookval: bookval,
+                                        status: '2'
+                                    },
+                                    type: "POST",
+                                    success: function(response) {
+                                        // alert(response)
+                                        Swal.fire({
+                                            title: "ยกเลิกสถานะการยืนยันสำเร็จ!",
+                                            type: "success"
+                                        }).then(function() {
+                                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                                        });
+                                    },
+                                    error: function() {
+                                        Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                                        exit
+                                    }
+                                });
+                            } else {
+                                check_confirm.checked = true
+                            }
+                        })
+                    }
+                })()
+            } else {
+                Swal.fire({
+                    title: 'สถานะการยืนยัน',
+                    text: 'ชื่อผู้ยืนยัน',
+                    input: 'text',
+                    showCancelButton: true,
+                    showCloseButton: true,
+                    confirmButtonText: 'บันทึกข้อมูล',
+                    cancelButtonText: 'ปิด',
+                    inputValidator: (result) => {
+                        if (!result) {
+                            return 'กรุณาเลือกรายการ!'
+                        }
+                    }
+                }).then((result) => {
+                    if (result.value) {
+                        jQuery.ajax({
+                            url: "../inc/ajax/booking/" + prodtype + ".php",
+                            data: {
+                                prodval: prodval,
+                                confirm_name: result.value,
+                                bookval: bookval,
+                                status: '1'
+                            },
+                            type: "POST",
+                            success: function(response) {
+                                // alert(response)
+                                Swal.fire({
+                                    title: "บันทึกข้อมูลสำเร็จ!",
+                                    type: "success"
+                                }).then(function() {
+                                    location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                                });
+                            },
+                            error: function() {
+                                Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                            }
+                        });
+                    } else {
+                        //Swal.fire('กรุณาใส่ชื่อผู้ยืนยัน!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                        check_confirm.checked = false
+                        // .then(function() {
+                        //     location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                        // });
+                    }
+                })
+            }
+            return true;
+        }
+
+        function check_confirm_email(prodtype) {
+            var remark_email = document.getElementById('remark_email').value
+            var bo_id = document.getElementById('bo_id').value
+            var id_email = [];
+            var els = document.getElementsByName('check_email[]');
+            for (var i = 0; i < els.length; i++) {
+                if (els[i].checked) {
+                    id_email.push(els[i].value);
+                }
+            }
+            if (id_email == '') {
+                Swal.fire('ส่งอีเมล์ไม่สำเร็จ!', 'กรุณาเลือกสินค้า', 'error')
+                exit
+            }
+
+            Swal.fire({
+                type: 'warning',
+                title: 'คุณแน่ใจไหม?',
+                text: "คุณต้องการส่งอีเมล์ใช่หรือไม่?",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ส่งอีเมล์!',
+                cancelButtonText: 'ปิด'
+            }).then((result) => {
+                if (result.value) {
+                    // alert(remark_email+' - '+bo_id+' - '+id_email)
+                    jQuery.ajax({
+                        url: "../inc/ajax/booking/" + prodtype + ".php",
+                        data: {
+                            remark_email: remark_email,
+                            bo_id: bo_id,
+                            id_email: id_email
+                        },
+                        type: "POST",
+                        success: function(response) {
+                            // $("#test-mail").html(response)
+                            Swal.fire({
+                                    title: "ส่งอีเมล์เสร็จสิ้น!",
+                                    text: "ข้อมูลที่คุณเลือกถูกส่งอีเมล์แล้ว",
+                                    type: "success"
+                                })
+                                .then(function() {
+                                    location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                                    // setTimeout(function () {
+                                    //     window.location.href = "<?php // echo $_SERVER['REQUEST_URI']; 
+                                                                    ?>";
+                                    // }, 6000);
+                                });
+                        },
+                        error: function() {
+                            Swal.fire('ส่งอีเมล์ไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                        }
+                    });
+                }
+            })
+            return true;
         }
     </script>
