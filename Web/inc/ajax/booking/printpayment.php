@@ -12,6 +12,7 @@ $fontData = $defaultFontConfig['fontdata'];
 if (!empty($_POST['bookval']) && !empty($_POST['sum_paid'])) {
     $bookpro_arr = array();
     $book_arr = array();
+    $type_arr = array_unique($_POST['type_arr']);
     $query_pb = "SELECT BP.*,
             BK.id as bkID, BK.voucher_no as bkVoucher, BK.customer_firstname as bkCFname , BK.customer_lastname as bkCLname,
             BK.customer_mobile as bkCmobile, BK.customer_email as bkCemail,
@@ -77,16 +78,20 @@ if (!empty($_POST['bookval']) && !empty($_POST['sum_paid'])) {
             ]
         ],
         'default_font' => 'prompt',
+        'margin_left'  => '15',
+        'margin_right' => '15',
+        'margin_top'   => '76',
+        'margin_bottom'   => '15',
     ]);
 
-    $message = '';
-    $message .= '<table width="700" border="0" cellspacing="0" cellpadding="1" align="center">
+    $mpdf->SetHTMLHeader('
+    <table width="700" border="0" cellspacing="0" cellpadding="1" align="center">
     <tr>
-        <td colspan="3" width="50%" valign="top" align="left">
+        <td height="100" colspan="3" width="50%" valign="top" align="left">
             <img src="' . $book_arr['company_photo'] . '" alt="Andaman Passion" title="Andaman Passion" width="120" border="0" />
             <br/>
         </td>
-        <td colspan="3" width="50%" valign="top" align="left">
+        <td height="100" colspan="3" width="50%" valign="top" align="left">
             <span style="font-weight:bold; font-size:16px;"> ' . $book_arr['company_name'] . ' </span> <br/>
             ' . $book_arr['company_address'] . ' <br/>
         </td>
@@ -132,65 +137,56 @@ if (!empty($_POST['bookval']) && !empty($_POST['sum_paid'])) {
         </td>
     </tr>
     <tr>
-        <td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ชื่อสินค้า </td>
-        <td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> </td>
-        <td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> วันที่ใช้บริการ </td>
-        <td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ราคา </td>
-        <td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> จำนวน </td>
-        <td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> รวม </td>
+        <td width="30%" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ชื่อสินค้า </td>
+        <td width="10%" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> </td>
+        <td width="20%" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> วันที่ใช้บริการ </td>
+        <td width="10%" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ราคา </td>
+        <td width="10%" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> จำนวน </td>
+        <td width="20%" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> รวม </td>
     </tr>
-    ';
+    </table>
+        ');
+
+    $message = '';
+    $message .= '<table width="700" border="0" cellspacing="0" cellpadding="1" align="center">';
 
     $total_price = 0;
     foreach ($bookpro_arr as $key => $value) {
-        $message .= '<tr>
-                     <td rowspan="2" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . $bookpro_arr[$key]['bp_name'] . ' </td>
-                     <td style="text-align: center; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ADL </td>
-                     <td rowspan="2" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . date("d F Y", strtotime($bookpro_arr[$key]['bp_travel_date'])) . ' </td>
-                     <td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . number_format($bookpro_arr[$key]['bp_rate_2']).'</td>
-                     <td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . $bookpro_arr[$key]['bp_adults'] . ' </td>
-                     <td rowspan="2" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . number_format($bookpro_arr[$key]['bp_price_latest']) . ' </td>
-                     </tr>
-                     <tr>
-                     <td style="text-align: center; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> CHD </td>
-                     <td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ';
+
+        $message .= '<tr>';
+        $message .= '<td width="30%" rowspan="2" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . $bookpro_arr[$key]['bp_name'] . ' ';
+        $message .= ($bookpro_arr[$key]['bp_adults'] == 0 && $bookpro_arr[$key]['bp_children'] == 0) ? ' [FOC]' : '';
+        $message .= '</td>';
+        $message .= '<td width="10%" style="text-align: center; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ADL </td>';
+        if ($bookpro_arr[$key]['bp_type'] != 4) {
+            $message .= '<td width="20%" rowspan="2" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . date("d F Y", strtotime($bookpro_arr[$key]['bp_travel_date'])) . ' </td>';
+        } else {
+            $message .= '<td width="20%" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . date("d F Y", strtotime($bookpro_arr[$key]['bp_checkin_date'])) . ' </td>';
+        }
+        $message .= '<td width="10%" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;">';
+        $message .= !empty($bookpro_arr[$key]['bp_rate_2']) ? number_format($bookpro_arr[$key]['bp_rate_2']) : '-';
+        $message .= '</td>';
+        $message .= '<td width="10%" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;">';
+        $message .= !empty($bookpro_arr[$key]['bp_adults']) ? number_format($bookpro_arr[$key]['bp_adults']) : '-';
+        $message .= '</td>';
+        $message .= '<td width="20%" rowspan="2" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;">';
+        $message .= !empty($bookpro_arr[$key]['bp_price_latest']) ? number_format($bookpro_arr[$key]['bp_price_latest']) : '-';
+        $message .= '</td>';
+        $message .= '</tr>';
+
+        $message .= '<tr>';
+        $message .= '<td width="10%" style="text-align: center; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> CHD </td>';
+        if ($bookpro_arr[$key]['bp_type'] == 4) {
+            $message .= '<td width="20%" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . date("d F Y", strtotime($bookpro_arr[$key]['bp_checkout_date'])) . ' </td>';
+        }
+        $message .= '<td width="10%" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;">';
         $message .= !empty($bookpro_arr[$key]['bp_rate_4']) ? number_format($bookpro_arr[$key]['bp_rate_4']) : '-';
-        $message .= '</td>
-                     <td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . number_format($bookpro_arr[$key]['bp_children']) . ' </td>
-                     </tr>
-                    ';
-        // $message .= '<tr>
-        //     <td rowspan="2" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . $bookpro_arr[$key]['bp_name'] . ' </td>';
-        // if ($bookpro_arr[$key]['bp_adults'] == 0 && $bookpro_arr[$key]['bp_children'] == 0) {
-        //     $message .= '<td rowspan="2" style="text-align: center; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> FOC </td>';
-        // } else {
-        //     $message .= '<td style="text-align: center; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ADL </td>';
-        // }
-        // if ($bookpro_arr[$key]['bp_type'] == 4) {
-        //     $message .= '<td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . date("d F Y", strtotime($bookpro_arr[$key]['bp_checkin_date'])) . ' </td>';
-        // } else {
-        //     $message .= '<td rowspan="2" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . date("d F Y", strtotime($bookpro_arr[$key]['bp_travel_date'])) . ' </td>';
-        // }
-        // if ($bookpro_arr[$key]['bp_adults'] == 0 && $bookpro_arr[$key]['bp_children'] == 0) {
-        //     $message .= '<td rowspan="2" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> 0 </td>
-        //                 <td rowspan="2" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . $bookpro_arr[$key]['bp_foc'] . ' </td> ';
-        // } else {
-        //     $message .= '<td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . number_format($bookpro_arr[$key]['bp_rate_2']) . ' </td>
-        //                 <td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . $bookpro_arr[$key]['bp_adults'] . ' </td>';
-        // }
-        // $message .= '<td rowspan="2" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . number_format($bookpro_arr[$key]['bp_price_latest']) . ' </td>';
-        // $message .= '</tr>
-        //             <tr>';
-        // if ($bookpro_arr[$key]['bp_adults'] != 0) {
-        //     $message .= '<td style="text-align: center; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> CHD </td>';
-        // }
-        // if ($bookpro_arr[$key]['bp_type'] == 4) {
-        //     $message .= '<td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . date("d F Y", strtotime($bookpro_arr[$key]['bp_checkout_date'])) . ' </td>';
-        // }
-        // if ($bookpro_arr[$key]['bp_adults'] != 0) {
-        //     $message .= '<td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . number_format($bookpro_arr[$key]['bp_rate_4']) . ' </td>
-        //                 <td style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . $bookpro_arr[$key]['bp_children'] . ' </td>';
-        // }
+        $message .= '</td>';
+        $message .= '<td width="10%" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;">';
+        $message .= !empty($bookpro_arr[$key]['bp_children']) ? number_format($bookpro_arr[$key]['bp_children']) : '-';
+        $message .= '</td>';
+        $message .= '</tr>';
+
         $message .= '</tr>';
         if ($bookpro_arr[$key]['bp_transfer'] == 1) {
             $message .= '
@@ -216,12 +212,12 @@ if (!empty($_POST['bookval']) && !empty($_POST['sum_paid'])) {
         <td colspan="1" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . number_format($_POST['total_balance']) . ' </td>
     </tr>
     <tr>
-        <td colspan="6" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;">
+        <td colspan="6" style="text-align: left; border:1px solid #cdcdcd; padding:5px 5px;">
             ประเภทการจ่ายเงิน : <br/>
             <table width="100%">';
-    foreach ($_POST['type_arr'] as $i => $value) {
+    foreach ($type_arr as $i => $value) {
         $message .= ($i == 0 || $i == 3 || $i == 6 || $i == 9 || $i == 12 || $i == 15) ? '<tr>' : '';
-        $message .= '<td width="33%"> <i class="ti-check-box"></i> ' . get_value('accounts', 'id', 'name', $value, $mysqli_p) . ' </td>';
+        $message .= '<td width="33%" style="font-size:11px;"> <img src="https://ams.andamanpassion.com/assets/images/check.png" width="12" /> ' . get_value('accounts', 'id', 'name', $value, $mysqli_p) . ' </td>';
         $message .= ($i == 2 || $i == 5 || $i == 8 || $i == 11 || $i == 14) ? '</tr>' : '';
     }
     $message .= '</table>
@@ -232,10 +228,12 @@ if (!empty($_POST['bookval']) && !empty($_POST['sum_paid'])) {
         <td colspan="3" height="70" valign="top" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ลายเซ็นผู้รับเงิน </td>
     </tr>
 </table>';
-    echo $message;
+    // echo $message;
 
     $mpdf->WriteHTML($message);
     $mpdf->Output("../../../assets/payment_pdf/" . $book_arr['voucher'] . ".pdf");
     ob_end_flush();
     $message = "";
+
+    echo "../assets/payment_pdf/" . $book_arr['voucher'] . ".pdf";
 }

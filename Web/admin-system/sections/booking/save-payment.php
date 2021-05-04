@@ -109,9 +109,9 @@ if (!empty($pm_booking)) {
 
         mysqli_close($mysqli_p);
 
-        $return_url = "&booking=" . $pm_booking . "&id=" . $pm_id;
+        $return_url = "&id=" . $pm_booking;
         $message_alert = "success";
-        echo "<meta http-equiv=\"refresh\" content=\"0; url='./?mode=booking/payment-detail" . $return_url . "&message=" . $message_alert . "'\" >";
+        echo "<meta http-equiv=\"refresh\" content=\"0; url='./?mode=booking/detail" . $return_url . "&message=" . $message_alert . "&payment=print'\" >";
     }
 } else {
     echo "<meta http-equiv=\"refresh\" content=\"0; url='./?mode=booking/payment-detail" . $return_url . "&message=" . $message_alert . "'\" >";

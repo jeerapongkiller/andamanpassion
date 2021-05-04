@@ -406,7 +406,7 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                             <h4 class="card-title"> ธุรกรรมการชำระเงิน</h4>
                             <!-- <h6 class="card-subtitle">Description</h6> -->
                             <a href="<?php echo './?mode=booking/payment-detail&booking=' . $bo_id; ?>" class="btn btn-info m-t-10 m-r-15"><i class="fa fa-plus-circle"></i> เพิ่มธุรกรรม </a>
-                            <a href="#print" onclick="printPayment(<?php echo $bo_id; ?>, 'print-payment')" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a>
+                            <a href="#print" onclick="printPayment(<?php echo $bo_id; ?>)" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a>
                             <!-- <a href="<?php echo './?mode=booking/print-payment&id=' . $bo_id; ?>" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a> -->
                             <div class="table-responsive m-t-10">
                                 <table id="paid-table" class="table display table-bordered table-striped no-wrap" style="width:100%">
@@ -561,7 +561,8 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                     $checkout_date = date("d F Y", strtotime($row_products["checkout_date"]));
                                     $price_latest = ($bo_agent == 0) ? number_format($row_products["price_latest"]) : '-';
                                     // $price_latest = number_format($row_products["price_latest"]);
-                                    $price_total = $row_products["trash_deleted"] != 1 ? $price_total + $row_products["price_latest"] : $price_total;
+                                    // $price_total = $row_products["trash_deleted"] != 1 ? $price_total + $row_products["price_latest"] : $price_total;
+                                    $price_total = $price_total + $row_products["price_latest"];
                                 } else {
                                     $travel_date = "ไม่ระบุวันที่";
                                     $checkin_date = "ไม่ระบุวันที่";
@@ -989,7 +990,8 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
             }
         }
 
-        function printPayment(bookval, prodtype) {
+        function printPayment() {
+            var bo_id = document.getElementById('bo_id');
             var sum_paid = document.getElementById('sum_paid');
             var total_balance = document.getElementById('total_balance');
             var type_arr = [];
@@ -998,19 +1000,22 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                 type_arr.push(type_pay[i].value);
             }
             jQuery.ajax({
-                url: "../inc/ajax/booking/" + prodtype + ".php",
+                url: "../inc/ajax/booking/printpayment.php",
                 data: {
-                    bookval: bookval,
+                    bookval: bo_id.value,
                     sum_paid: sum_paid.value,
                     total_balance: total_balance.value,
                     type_arr: type_arr
                 },
                 type: "POST",
                 success: function(response) {
-                    $("#test-mail").html(response)
+                    // $("#test-mail").html(response)
+                    if(response) {
+                        window.open(response, '_blank');
+                    }
                 },
                 error: function() {
-                    Swal.fire('ลบข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                    Swal.fire('พิมพ์ข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
                 }
             });
         }

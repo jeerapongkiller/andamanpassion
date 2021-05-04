@@ -573,7 +573,7 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                         [2, 'asc']
                     ],
                     columnDefs: [{
-                        targets: [1],
+                        targets: [5, 6],
                         orderable: false
                     }],
                     "displayLength": 10,
@@ -756,9 +756,13 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     checkCompanyinvoice();
                 }
                 if (str_mode.indexOf("booking/detail") >= 0) {
+                    var str_print = "<?php echo (!empty($_GET['payment']) && $_GET['payment'] == 'print') ? 'true' : 'false' ; ?>"
                     checkCustomertype();
                     checkVoucher();
                     checkCancel();
+                    if(str_print == 'true'){
+                        printPayment();
+                    }
                 }
                 if (str_mode.indexOf("booking/payment-detail") >= 0) {
                     // checkProducts();
