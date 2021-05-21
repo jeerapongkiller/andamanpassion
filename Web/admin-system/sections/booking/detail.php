@@ -282,6 +282,27 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                 </div>
                             </div>
 
+                            <div class="form-row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="bo_facebook"> Facebook </label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputFirstname"><i class="ti-user"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" id="bo_facebook" name="bo_facebook" placeholder="" aria-describedby="inputFirstname" value="<?php echo $bo_facebook; ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="bo_line"> Line </label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputFirstname"><i class="ti-user"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" id="bo_line" name="bo_line" placeholder="" aria-describedby="inputFirstname" value="<?php echo $bo_line; ?>">
+                                    </div>
+                                </div>
+                            </div>
+
                             <hr>
 
                             <div class="form-row">
@@ -398,87 +419,6 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
             <?php
             if (!empty($bo_id)) {
             ?>
-
-                <!-- Payment Table -->
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title"> ธุรกรรมการชำระเงิน</h4>
-                            <!-- <h6 class="card-subtitle">Description</h6> -->
-                            <a href="<?php echo './?mode=booking/payment-detail&booking=' . $bo_id; ?>" class="btn btn-info m-t-10 m-r-15"><i class="fa fa-plus-circle"></i> เพิ่มธุรกรรม </a>
-                            <a href="#print" onclick="printPayment(<?php echo $bo_id; ?>)" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a>
-                            <!-- <a href="<?php echo './?mode=booking/print-payment&id=' . $bo_id; ?>" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a> -->
-                            <div class="table-responsive m-t-10">
-                                <table id="paid-table" class="table display table-bordered table-striped no-wrap" style="width:100%">
-                                    <thead>
-                                        <tr align="center">
-                                            <th>สถานะ</th>
-                                            <th>เลขใบเสร็จ</th>
-                                            <th>สินค้า (วันที่เที่ยว)</th>
-                                            <th>วันที่ชำระ</th>
-                                            <th>จำนวนเงิน</th>
-                                            <th>แก้ไข / ดู</th>
-                                            <th>ยกเลิก / ลบ</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $date_travel = '';
-                                        $sum_paid = 0;
-                                        $query_pb = "SELECT PB.*,
-                                                     BK.id as bkID, BK.voucher_no as bkVoucher,
-                                                     BP.id as bpID, BP.products_category_second as bpPCS, BP.products_type as bpType, 
-                                                     BP.travel_date as bpTravel_date, BP.checkin_date as bpCheckin_date,
-                                                     PCS.id as pcsID, PCS.name as pcsName
-                                                     FROM payments_booking PB
-                                                     LEFT JOIN booking BK
-                                                        ON PB.booking = BK.id
-                                                     LEFT JOIN booking_products BP
-                                                        ON PB.booking_products = BP.id
-                                                     LEFT JOIN products_category_second PCS
-                                                        ON BP.products_category_second = PCS.id
-                                                     WHERE PB.booking = '" . $bo_id . "' ";
-                                        $procedural_statement_pb = mysqli_prepare($mysqli_p, $query_pb);
-                                        mysqli_stmt_execute($procedural_statement_pb);
-                                        $result_pb = mysqli_stmt_get_result($procedural_statement_pb);
-                                        while ($row_pb = mysqli_fetch_array($result_pb, MYSQLI_ASSOC)) {
-                                            $status_class = $row_pb["status"] == 1 ? 'success' : 'danger';
-                                            $status_txt = $row_pb["status"] == 1 ? 'ออนไลน์' : 'ยกเลิก';
-                                            $date_travel = $row_pb["bpType"] == 4 ? $row_pb["bpCheckin_date"] : $row_pb["bpTravel_date"];
-                                            $name_payment = $row_pb["booking_products"] == 0 ? 'ชำระทั้งหมด' : $row_pb['pcsName'] . '<br />(' . date("d F Y", strtotime($date_travel)) . ')';
-                                            $sum_paid = $row_pb["status"] == 1 ? $sum_paid + $row_pb['amount_paid'] : $sum_paid;
-                                        ?>
-                                            <tr>
-                                                <td align="center"> <span class="label label-<?php echo $status_class; ?>"><?php echo $status_txt; ?></span> </td>
-                                                <td align="center" style="font-weight: bold"> <?php echo $row_pb['receip_no']; ?> </td>
-                                                <td align="center"> <?php echo $name_payment; ?> </td>
-                                                <td align="center"> <?php echo $row_pb['date_paid']; ?> </td>
-                                                <td align="center"> <?php echo number_format($row_pb['amount_paid']); ?> </td>
-                                                <td align="center" width="7%">
-                                                    <a href="./?mode=booking/payment-detail&booking=<?php echo $bo_id; ?>&id=<?php echo $row_pb["id"]; ?>" title="Edit"><i class="fas fa-edit" style="color:#0D84DE"></i></a>
-                                                </td>
-                                                <td align="center" width="7%">
-                                                    <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
-                                                        <?php if ($row_pb['status'] == '2' && $row_pb["trash_deleted"] == '1') { ?>
-                                                            <a href="#restore" onclick="restorePayment('<?php echo $row_pb['id']; ?>', '<?php echo $row_pb['booking']; ?>', 'restorepayment');" title="Restore"><i class="ti-reload" style="color:#0CDE66"></i></a>
-                                                        <?php } else { ?>
-                                                            <a href="#deleted" onclick="deletePayment('<?php echo $row_pb['id']; ?>', '<?php echo $row_pb['booking']; ?>', 'deletepayment');" title="Delete"><i class="fas fa-trash-alt" style="color:#FF0000"></i></a>
-                                                        <?php } ?>
-                                                    <?php } ?>
-                                                </td>
-                                                <input type="hidden" id="type_pay<?php echo $row_pb["id"]; ?>" name="type_pay[]" value="<?php echo $row_pb["accounts"]; ?>">
-                                            </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Print Payment Hidden -->
-                <input type="hidden" id="sum_paid" name="sum_paid" value="<?php echo $sum_paid; ?>">
-                <input type="hidden" id="total_balance" name="total_balance" value="">
-
                 <!-- Validation Form -->
                 <div class="col-12">
                     <div class="card">
@@ -820,6 +760,86 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                     <!------ Check Cancel ----->
                     <input type="hidden" id="check_cancel" name="check_cancel" value="<?php echo $check_cancel; ?>" onchange="checkCancel()">
 
+                    <!-- Payment Table -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title"> ธุรกรรมการชำระเงิน</h4>
+                                <!-- <h6 class="card-subtitle">Description</h6> -->
+                                <a href="<?php echo './?mode=booking/payment-detail&booking=' . $bo_id; ?>" class="btn btn-info m-t-10 m-r-15"><i class="fa fa-plus-circle"></i> เพิ่มธุรกรรม </a>
+                                <a href="#print" onclick="printPayment(<?php echo $bo_id; ?>)" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a>
+                                <!-- <a href="<?php echo './?mode=booking/print-payment&id=' . $bo_id; ?>" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a> -->
+                                <div class="table-responsive m-t-10">
+                                    <table id="paid-table" class="table display table-bordered table-striped no-wrap" style="width:100%">
+                                        <thead>
+                                            <tr align="center">
+                                                <th>สถานะ</th>
+                                                <th>เลขใบเสร็จ</th>
+                                                <th>สินค้า (วันที่เที่ยว)</th>
+                                                <th>วันที่ชำระ</th>
+                                                <th>จำนวนเงิน</th>
+                                                <th>แก้ไข / ดู</th>
+                                                <th>ยกเลิก / ลบ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $date_travel = '';
+                                            $sum_paid = 0;
+                                            $query_pb = "SELECT PB.*,
+                                                     BK.id as bkID, BK.voucher_no as bkVoucher,
+                                                     BP.id as bpID, BP.products_category_second as bpPCS, BP.products_type as bpType, 
+                                                     BP.travel_date as bpTravel_date, BP.checkin_date as bpCheckin_date,
+                                                     PCS.id as pcsID, PCS.name as pcsName
+                                                     FROM payments_booking PB
+                                                     LEFT JOIN booking BK
+                                                        ON PB.booking = BK.id
+                                                     LEFT JOIN booking_products BP
+                                                        ON PB.booking_products = BP.id
+                                                     LEFT JOIN products_category_second PCS
+                                                        ON BP.products_category_second = PCS.id
+                                                     WHERE PB.booking = '" . $bo_id . "' ";
+                                            $procedural_statement_pb = mysqli_prepare($mysqli_p, $query_pb);
+                                            mysqli_stmt_execute($procedural_statement_pb);
+                                            $result_pb = mysqli_stmt_get_result($procedural_statement_pb);
+                                            while ($row_pb = mysqli_fetch_array($result_pb, MYSQLI_ASSOC)) {
+                                                $status_class = $row_pb["status"] == 1 ? 'success' : 'danger';
+                                                $status_txt = $row_pb["status"] == 1 ? 'ออนไลน์' : 'ยกเลิก';
+                                                $date_travel = $row_pb["bpType"] == 4 ? $row_pb["bpCheckin_date"] : $row_pb["bpTravel_date"];
+                                                $name_payment = $row_pb["booking_products"] == 0 ? 'ชำระทั้งหมด' : $row_pb['pcsName'] . '<br />(' . date("d F Y", strtotime($date_travel)) . ')';
+                                                $sum_paid = $row_pb["status"] == 1 ? $sum_paid + $row_pb['amount_paid'] : $sum_paid;
+                                            ?>
+                                                <tr>
+                                                    <td align="center"> <span class="label label-<?php echo $status_class; ?>"><?php echo $status_txt; ?></span> </td>
+                                                    <td align="center" style="font-weight: bold"> <?php echo $row_pb['receip_no']; ?> </td>
+                                                    <td align="center"> <?php echo $name_payment; ?> </td>
+                                                    <td align="center"> <?php echo $row_pb['date_paid']; ?> </td>
+                                                    <td align="center"> <?php echo number_format($row_pb['amount_paid']); ?> </td>
+                                                    <td align="center" width="7%">
+                                                        <a href="./?mode=booking/payment-detail&booking=<?php echo $bo_id; ?>&id=<?php echo $row_pb["id"]; ?>" title="Edit"><i class="fas fa-edit" style="color:#0D84DE"></i></a>
+                                                    </td>
+                                                    <td align="center" width="7%">
+                                                        <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
+                                                            <?php if ($row_pb['status'] == '2' && $row_pb["trash_deleted"] == '1') { ?>
+                                                                <a href="#restore" onclick="restorePayment('<?php echo $row_pb['id']; ?>', '<?php echo $row_pb['booking']; ?>', 'restorepayment');" title="Restore"><i class="ti-reload" style="color:#0CDE66"></i></a>
+                                                            <?php } else { ?>
+                                                                <a href="#deleted" onclick="deletePayment('<?php echo $row_pb['id']; ?>', '<?php echo $row_pb['booking']; ?>', 'deletepayment');" title="Delete"><i class="fas fa-trash-alt" style="color:#FF0000"></i></a>
+                                                            <?php } ?>
+                                                        <?php } ?>
+                                                    </td>
+                                                    <input type="hidden" id="type_pay<?php echo $row_pb["id"]; ?>" name="type_pay[]" value="<?php echo $row_pb["accounts"]; ?>">
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Print Payment Hidden -->
+                    <input type="hidden" id="sum_paid" name="sum_paid" value="<?php echo $sum_paid; ?>">
+                    <input type="hidden" id="total_balance" name="total_balance" value="">
+
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
@@ -969,9 +989,10 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
     <!-- ============================================================== -->
     <script>
         <?php
-        $price_total = !empty($price_total) ? $price_total : '0';
-        $price_paid = !empty($price_paid) ? $price_paid : '0';
-        $price_balance = !empty($price_balance) ? $price_balance : '0';
+        $price_total = !empty($price_total) ? $price_total : 0;
+        $price_paid = !empty($price_paid) ? $price_paid : 0;
+        $price_balance = !empty($price_balance) ? $price_balance : 0;
+        $sum_paid = !empty($sum_paid) ? $sum_paid : 0;
         if ($sum_paid > 0) {
             $price_paid = $sum_paid;
             $price_balance = $price_total - $price_paid;
@@ -980,7 +1001,8 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
         document.getElementById('price_total').innerHTML = '<?php echo number_format($price_total); ?>';
         document.getElementById('price_paid').innerHTML = '<?php echo number_format($price_paid); ?>';
         document.getElementById('price_balance').innerHTML = '<?php echo number_format($price_balance); ?>';
-        document.getElementById('total_balance').value = <?php echo $price_balance; ?>;
+        var total_balance = document.getElementById('total_balance');
+        total_balance.value = '<?php echo $price_balance != 0 ? $price_balance : 0; ?>';
 
         function checkCancel() {
             var check_cancel = document.getElementById('check_cancel')
@@ -1010,7 +1032,7 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                 type: "POST",
                 success: function(response) {
                     // $("#test-mail").html(response)
-                    if(response) {
+                    if (response) {
                         window.open(response, '_blank');
                     }
                 },

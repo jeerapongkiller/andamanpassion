@@ -199,19 +199,28 @@ if (!empty($_POST['bookval']) && !empty($_POST['sum_paid'])) {
         }
     }
 
+    $message .= '<tr>';
+    $message .= '<td colspan="5" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> รวมทั้งหมด </td>';
+    $message .= '<td colspan="1" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ';
+    $message .= $_POST['total_balance'] <= 0 ? number_format($_POST['sum_paid']) : '-';
+    $message .= ' </td>';
+    $message .= '</tr>';
+
+    $message .= '<tr>';
+    $message .= '<td colspan="5" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> มัดจำ </td>';
+    $message .= '<td colspan="1" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;">';
+    $message .= $_POST['total_balance'] > 0 ? number_format($_POST['sum_paid']) : '-';
+    $message .= '</td>';
+    $message .= '</tr>';
+
+    $message .= '<tr>';
+    $message .= '<td colspan="5" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> คงเลือ </td>';
+    $message .= '<td colspan="1" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ';
+    $message .= $_POST['total_balance'] > 0 ? number_format($_POST['total_balance']) : '-';
+    $message .= '</td>';
+    $message .= '</tr>';
+
     $message .= '<tr>
-        <td colspan="5" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> รวมทั้งหมด </td>
-        <td colspan="1" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . number_format($_POST['sum_paid']) . ' </td>
-    </tr>
-    <tr>
-        <td colspan="5" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> มัดจำ </td>
-        <td colspan="1" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> </td>
-    </tr>
-    <tr>
-        <td colspan="5" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> คงเลือ </td>
-        <td colspan="1" style="text-align: left; border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> ' . number_format($_POST['total_balance']) . ' </td>
-    </tr>
-    <tr>
         <td colspan="6" style="text-align: left; border:1px solid #cdcdcd; padding:5px 5px;">
             ประเภทการจ่ายเงิน : <br/>
             <table width="100%">';

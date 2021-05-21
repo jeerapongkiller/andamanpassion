@@ -39,6 +39,7 @@ if (!empty($_POST["ptype"]) && !empty($_POST["catethird"])) {
     $numrow = mysqli_num_rows($result_cate);
 
     // echo $query_cate;
+    // echo $_POST["catethird"];
 
     if ($numrow > 0) {
         $row_cate = mysqli_fetch_array($result_cate, MYSQLI_ASSOC);
@@ -104,7 +105,8 @@ if (!empty($_POST["ptype"]) && !empty($_POST["catethird"])) {
                 }
                 $hours_no = $row_cate["hours_no"] != 0 ? $row_cate["hours_no"] : 0 ;
             } else {
-                $price_sum = 0;
+                $rate_2 = $row_cate["rate_2"];
+                $price_sum = $_POST["bp_no_cars"] * $row_cate["rate_2"];
             }
         } elseif ($_POST["ptype"] == 4) {
             $nodate = 0;

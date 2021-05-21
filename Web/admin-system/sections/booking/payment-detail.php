@@ -126,7 +126,7 @@ $pm_photo1 = !empty($row["photo1"]) ? $row["photo1"] : '';
                                                                     echo "selected";
                                                                 } ?>>-</option>
                                             <?php
-                                            $query_accounts = "SELECT * FROM accounts WHERE id > '0'";
+                                            $query_accounts = "SELECT * FROM accounts WHERE id > '0' AND status != '2' ";
                                             $query_accounts .= " ORDER BY name ASC";
                                             $result_accounts = mysqli_query($mysqli_p, $query_accounts);
                                             while ($row_accounts = mysqli_fetch_array($result_accounts, MYSQLI_ASSOC)) {
