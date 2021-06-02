@@ -17,7 +17,6 @@ if (!empty($_GET["id"])) {
 } else {
     $page_title = "เพิ่มข้อมูลธุรกรรมการเงิน";
 }
-
 $pm_id = !empty($row["id"]) ? $row["id"] : '0';
 $pm_status = !empty($row["status"]) ? $row["status"] : '0';
 $pm_booking = !empty($_GET["booking"]) ? $_GET["booking"] : '0';
@@ -31,6 +30,10 @@ $pm_receiver_name = !empty($row["receiver_name"]) ? $row["receiver_name"] : '';
 $pm_bank_name = !empty($row["bank_name"]) ? $row["bank_name"] : '';
 $pm_bank_no = !empty($row["bank_no"]) ? $row["bank_no"] : '';
 $pm_photo1 = !empty($row["photo1"]) ? $row["photo1"] : '';
+# --- Price --- #
+$pm_total = !empty($_POST["pm_total"]) ? $_POST["pm_total"] : '0';
+$pm_paid = !empty($_POST["pm_paid"]) ? $_POST["pm_paid"] : '0';
+$pm_balance = !empty($_POST["pm_balance"]) ? $_POST["pm_balance"] : '0';
 ?>
 
 <!-- ============================================================== -->
@@ -77,6 +80,9 @@ $pm_photo1 = !empty($row["photo1"]) ? $row["photo1"] : '';
                             <input type="hidden" id="pm_id" name="pm_id" value="<?php echo $pm_id; ?>">
                             <input type="hidden" id="page_title" name="page_title" value="<?php echo $page_title; ?>">
                             <input type="hidden" id="pm_booking" name="pm_booking" value="<?php echo $pm_booking; ?>">
+                            <input type="hidden" id="pm_total" name="pm_total" value="<?php echo $pm_total; ?>" >
+                            <input type="hidden" id="pm_paid" name="pm_paid" value="<?php echo $pm_paid; ?>" >
+                            <input type="hidden" id="pm_balance" name="pm_balance" value="<?php echo $pm_balance; ?>" >
                             <div class="form-row">
                                 <div class="col-md-4 mb-3">
                                     <label for="pm_status">สถานะ</label>
@@ -283,6 +289,7 @@ $pm_photo1 = !empty($row["photo1"]) ? $row["photo1"] : '';
     }
 
     function priceformat(inputfield) {
+        var pm_balance = document.getElementById('pm_balance')
         var i = 0,
             num = 0;
         var j = document.getElementById(inputfield).value;
@@ -298,6 +305,12 @@ $pm_photo1 = !empty($row["photo1"]) ? $row["photo1"] : '';
             document.getElementById(inputfield).value = '0';
         } else {
             document.getElementById(inputfield).value = n;
+        }
+        if (inputfield == 'pm_amount_paid') {
+            var pm_amount_paid = document.getElementById(inputfield)
+            if(d > pm_balance.value) {
+                pm_amount_paid.value = pm_balance.value
+            }
         }
     }
 

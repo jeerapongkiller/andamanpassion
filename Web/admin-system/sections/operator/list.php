@@ -210,7 +210,7 @@
 
                     <?php
                     # check value from search 
-                    $next7day = date('Y-m-d',strtotime($today . "+1 month"));
+                    $next7day = date('Y-m-d',strtotime($today . "+1 day"));
                     $search_voucher_no_val = !empty($_POST["search_voucher_no"]) ? $_POST["search_voucher_no"] : '';
                     $search_customer_firstname_val = !empty($_POST["search_customer_firstname"]) ? $_POST["search_customer_firstname"] : '';
                     $search_customer_lastname_val = !empty($_POST["search_customer_lastname"]) ? $_POST["search_customer_lastname"] : '';

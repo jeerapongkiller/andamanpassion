@@ -123,11 +123,12 @@
                     $search_booking_date_from_val = !empty($_POST["search_booking_date_from"]) ? $_POST["search_booking_date_from"] : ''; //$today;
                     $search_booking_date_to_val = !empty($_POST["search_booking_date_to"]) ? $_POST["search_booking_date_to"] : ''; //$today;
                     $search_agent_val = !empty($_POST["search_agent_val"]) ? $_POST["search_agent_val"] : '';
-                    $search_travel_date_from_val = !empty($_POST["search_travel_date_from"]) ? $_POST["search_travel_date_from"] : "";// $today;
+                    $search_travel_date_from_val = !empty($_POST["search_travel_date_from"]) ? $_POST["search_travel_date_from"] : ""; // $today;
                     $search_travel_date_to_val = !empty($_POST["search_travel_date_to"]) ? $_POST["search_travel_date_to"] : ""; //$today;
                     $search_status_email_val = !empty($_POST["search_status_email"]) ? $_POST["search_status_email"] : '';
                     $search_status_confirm_val = !empty($_POST["search_status_confirm"]) ? $_POST["search_status_confirm"] : '';
                     $search_status_val = !empty($_POST["search_status"]) ? $_POST["search_status"] : '';
+                    $search_products_val = !empty($_POST["search_products"]) ? $_POST["search_products"] : '';
                     ?>
 
                     <!-- Validation Form (Search) -->
@@ -142,6 +143,40 @@
                                             <input type="text" class="form-control" id="search_voucher_no" name="search_voucher_no" placeholder="" value="<?php echo $search_voucher_no_val; ?>">
                                         </div>
                                         <div class="col-md-2 mb-3">
+                                            <label for="search_products">สินค้า</label>
+                                            <select class="custom-select" id="search_products" name="search_products">
+                                                <option value="0" <?php if ($search_products_val == 0) {
+                                                                        echo "selected";
+                                                                    } ?>>ทั้งหมด</option>
+                                                <?php
+                                                $first_before = 0;
+                                                $numrow_realtime = 1;
+                                                $query_products = "SELECT PCS.*,
+                                                                    PCF.id as pcfID, PCF.name as pcfName 
+                                                                FROM products_category_second PCS
+                                                                LEFT JOIN products_category_first PCF
+                                                                    ON PCS.products_category_first = PCF.id
+                                                                WHERE PCS.id > '0'";
+                                                $query_products .= " ORDER BY PCF.name ASC";
+                                                $result_products = mysqli_query($mysqli_p, $query_products);
+                                                while ($row_products = mysqli_fetch_array($result_products, MYSQLI_ASSOC)) {
+                                                    if ($first_before != $row_products["pcfID"]) {
+                                                        echo ($numrow_realtime != 1) ? '</optgroup>' : '';
+                                                        echo '<optgroup label=" ' . $row_products["pcfName"] . ' ">';
+                                                        $first_before = $row_products["pcfID"];
+                                                    }
+                                                ?>
+                                                    <option value="<?php echo $row_products["id"]; ?>" <?php if ($search_products_val == $row_products["id"]) {
+                                                                                                            echo "selected";
+                                                                                                        } ?>>
+                                                        <?php echo $row_products["name"]; ?></option>
+                                                <?php
+                                                    echo ($numrow_realtime != 1) ? '</optgroup>' : '';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 mb-3">
                                             <label for="search_customer_firstname">ชื่อ (ลูกค้า)</label>
                                             <input type="text" class="form-control" id="search_customer_firstname" name="search_customer_firstname" placeholder="" value="<?php echo $search_customer_firstname_val; ?>">
                                         </div>
@@ -153,16 +188,6 @@
                                             <label for="search_customer_mobile">เบอร์โทรศัพท์ (ลูกค้า)</label>
                                             <input type="text" class="form-control" id="search_customer_mobile" name="search_customer_mobile" placeholder="" value="<?php echo $search_customer_mobile_val; ?>">
                                         </div>
-                                        <div class="col-md-2 mb-3">
-                                            <label for="search_booking_date_from">วันที่จอง (จาก)</label>
-                                            <input type="text" class="form-control" id="search_booking_date_from" name="search_booking_date_from" placeholder="" value="<?php echo $search_booking_date_from_val; ?>" readonly>
-                                        </div>
-                                        <div class="col-md-2 mb-3">
-                                            <label for="search_booking_date_to">วันที่จอง (ถึง)</label>
-                                            <input type="text" class="form-control" id="search_booking_date_to" name="search_booking_date_to" placeholder="" value="<?php echo $search_booking_date_to_val; ?>" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
                                         <div class="col-md-2 mb-3">
                                             <label for="search_agent_val">เอเย่นต์</label>
                                             <select class="custom-select" id="search_agent_val" name="search_agent_val">
@@ -183,6 +208,14 @@
                                                 }
                                                 ?>
                                             </select>
+                                        </div>
+                                        <div class="col-md-2 mb-3">
+                                            <label for="search_booking_date_from">วันที่จอง (จาก)</label>
+                                            <input type="text" class="form-control" id="search_booking_date_from" name="search_booking_date_from" placeholder="" value="<?php echo $search_booking_date_from_val; ?>" readonly>
+                                        </div>
+                                        <div class="col-md-2 mb-3">
+                                            <label for="search_booking_date_to">วันที่จอง (ถึง)</label>
+                                            <input type="text" class="form-control" id="search_booking_date_to" name="search_booking_date_to" placeholder="" value="<?php echo $search_booking_date_to_val; ?>" readonly>
                                         </div>
                                         <div class="col-md-2 mb-3">
                                             <label for="search_travel_date_from">วันที่เที่ยว / วันที่เช็คอิน (จาก)</label>
@@ -303,17 +336,29 @@
                                         <tbody>
                                             <?php
                                             # -- Check Search Travel Date
-                                            if(!empty($search_travel_date_from_val) && !empty($search_travel_date_to_val)){
+                                            if (!empty($search_travel_date_from_val) && !empty($search_travel_date_to_val)) {
                                                 $id_travels = array();
                                                 $query_product = "SELECT * FROM booking_products WHERE id > '0' AND travel_date BETWEEN ? AND ? OR checkin_date >= ? AND checkout_date <= ? ";
                                                 $procedural_statement = mysqli_prepare($mysqli_p, $query_product);
                                                 mysqli_stmt_bind_param($procedural_statement, 'ssss', $search_travel_date_from_val, $search_travel_date_to_val, $search_travel_date_from_val, $search_travel_date_to_val);
                                                 mysqli_stmt_execute($procedural_statement);
                                                 $result_products = mysqli_stmt_get_result($procedural_statement);
-                                                while($row_products = mysqli_fetch_array($result_products, MYSQLI_ASSOC)){
-                                                    if($row_products['date_not_specified'] != "1"){
+                                                while ($row_products = mysqli_fetch_array($result_products, MYSQLI_ASSOC)) {
+                                                    if ($row_products['date_not_specified'] != "1") {
                                                         array_push($id_travels, $row_products['booking']);
                                                     }
+                                                }
+                                            }
+
+                                            # --- Check Search Products --- #
+                                            if (!empty($search_products_val)) {
+                                                $id_products = array();
+                                                $query_product = "SELECT * FROM booking_products WHERE id > '0' AND products_category_second = '$search_products_val' ";
+                                                $procedural_statement = mysqli_prepare($mysqli_p, $query_product);
+                                                mysqli_stmt_execute($procedural_statement);
+                                                $result = mysqli_stmt_get_result($procedural_statement);
+                                                while ($row_products = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                                                    array_push($id_products, $row_products['booking']);
                                                 }
                                             }
 
@@ -329,83 +374,88 @@
                                                             ON booking.agent = agent.id
                                                         WHERE booking.id > '0'
                                             ";
-                                            if($_SESSION["admin"]["permission"] != 1){ $query .= " AND trash_deleted != '1'"; }
-                                            if(!empty($search_travel_date_from_val) && !empty($search_travel_date_to_val)){
+                                            if ($_SESSION["admin"]["permission"] != 1) {
+                                                $query .= " AND trash_deleted != '1'";
+                                            }
+                                            if (!empty($search_travel_date_from_val) && !empty($search_travel_date_to_val)) {
                                                 # search travel date , check in , check out
                                                 $id_booking = array_unique($id_travels);
                                                 $count = array_count_values($id_booking);
                                                 $i = "1";
                                                 $value_id = "(";
                                                 foreach ($id_booking as $value) {
-                                                    $value_id .= count($id_booking) != $i ? $value.", " : $value.")" ;
+                                                    $value_id .= count($id_booking) != $i ? $value . ", " : $value . ")";
                                                     $i++;
                                                 }
                                                 $query .= "AND booking.id IN $value_id";
                                             }
-                                            if(!empty($search_voucher_no_val))
-                                            { 
+                                            if (!empty($search_voucher_no_val)) {
                                                 # search voucher_no
-                                                $query .= " AND booking.voucher_no = ?"; 
+                                                $query .= " AND booking.voucher_no = ?";
                                                 $bind_types .= "s";
                                                 array_push($params, $search_voucher_no_val);
                                             }
-                                            if(!empty($search_customer_firstname_val))
-                                            { 
+                                            if (!empty($search_products_val)) {
+                                                # search voucher_no
+                                                $un_products = array_unique($id_products);
+                                                $count_pro = array_count_values($un_products);
+                                                $i = "1";
+                                                $value_id = "(";
+                                                foreach ($un_products as $value) {
+                                                    $value_id .= count($un_products) != $i ? $value . ", " : $value . ")";
+                                                    $i++;
+                                                }
+                                                $query .= "AND booking.id IN $value_id";
+                                            }
+                                            if (!empty($search_customer_firstname_val)) {
                                                 # search customer firstname
-                                                $query .= " AND booking.customer_firstname = ?"; 
+                                                $query .= " AND booking.customer_firstname = ?";
                                                 $bind_types .= "s";
                                                 array_push($params, $search_customer_firstname_val);
                                             }
-                                            if(!empty($search_customer_lastname_val))
-                                            { 
+                                            if (!empty($search_customer_lastname_val)) {
                                                 # search customer lastname
-                                                $query .= " AND booking.customer_lastname = ?"; 
+                                                $query .= " AND booking.customer_lastname = ?";
                                                 $bind_types .= "s";
                                                 array_push($params, $search_customer_lastname_val);
                                             }
-                                            if(!empty($search_customer_mobile_val))
-                                            { 
+                                            if (!empty($search_customer_mobile_val)) {
                                                 # search customer mobile
-                                                $query .= " AND booking.customer_mobile = ?"; 
+                                                $query .= " AND booking.customer_mobile = ?";
                                                 $bind_types .= "s";
                                                 array_push($params, $search_customer_mobile_val);
                                             }
-                                            if(!empty($search_agent_val))
-                                            { 
+                                            if (!empty($search_agent_val)) {
                                                 # search agent
-                                                $query .= " AND booking.agent = ?"; 
+                                                $query .= " AND booking.agent = ?";
                                                 $bind_types .= "i";
                                                 array_push($params, $search_agent_val);
                                             }
-                                            if(!empty($search_status_email_val))
-                                            { 
+                                            if (!empty($search_status_email_val)) {
                                                 # search status_email
-                                                if($search_status_email_val != "3"){
-                                                    $query .= " AND booking.status_email = ?"; 
-                                                }else{
-                                                    $query .= " AND booking.status_email_revise = ?"; 
+                                                if ($search_status_email_val != "3") {
+                                                    $query .= " AND booking.status_email = ?";
+                                                } else {
+                                                    $query .= " AND booking.status_email_revise = ?";
                                                 }
                                                 $bind_types .= "i";
                                                 array_push($params, $search_status_email_val);
                                             }
-                                            if(!empty($search_status_confirm_val))
-                                            { 
+                                            if (!empty($search_status_confirm_val)) {
                                                 # search status_confirm
-                                                $query .= " AND booking.status_confirm = ?"; 
+                                                $query .= " AND booking.status_confirm = ?";
                                                 $bind_types .= "i";
                                                 array_push($params, $search_status_confirm_val);
                                             }
-                                            if(!empty($search_status_val))
-                                            { 
+                                            if (!empty($search_status_val)) {
                                                 # search status
-                                                $query .= " AND booking.status = ?"; 
+                                                $query .= " AND booking.status = ?";
                                                 $bind_types .= "i";
                                                 array_push($params, $search_status_val);
                                             }
-                                            if(!empty($search_booking_date_from_val) && !empty($search_booking_date_to_val))
-                                            { 
+                                            if (!empty($search_booking_date_from_val) && !empty($search_booking_date_to_val)) {
                                                 # search status
-                                                $query .= " AND booking.booking_date BETWEEN ? AND ?"; 
+                                                $query .= " AND booking.booking_date BETWEEN ? AND ?";
                                                 $bind_types .= "ss";
                                                 array_push($params, $search_booking_date_from_val, $search_booking_date_to_val);
                                             }

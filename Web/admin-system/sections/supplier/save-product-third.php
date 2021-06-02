@@ -23,8 +23,11 @@ $third_extra_hour_1 = !empty($_POST["third_extra_hour_1"]) ? preg_replace('(,)',
 $third_extra_hour_2 = !empty($_POST["third_extra_hour_2"]) ? preg_replace('(,)', '', $_POST["third_extra_hour_2"]) : '0';
 $third_extrabeds_1 = !empty($_POST["third_extrabeds_1"]) ? preg_replace('(,)', '', $_POST["third_extrabeds_1"]) : '0';
 $third_extrabeds_2 = !empty($_POST["third_extrabeds_2"]) ? preg_replace('(,)', '', $_POST["third_extrabeds_2"]) : '0';
+$third_extrabeds_3 = !empty($_POST["third_extrabeds_3"]) ? preg_replace('(,)', '', $_POST["third_extrabeds_3"]) : '0';
+$third_extrabeds_4 = !empty($_POST["third_extrabeds_4"]) ? preg_replace('(,)', '', $_POST["third_extrabeds_4"]) : '0';
 $third_sharingbed_1 = !empty($_POST["third_sharingbed_1"]) ? preg_replace('(,)', '', $_POST["third_sharingbed_1"]) : '0';
 $third_sharingbed_2 = !empty($_POST["third_sharingbed_2"]) ? preg_replace('(,)', '', $_POST["third_sharingbed_2"]) : '0';
+$third_season = !empty($_POST["third_season"]) ? preg_replace('(,)', '', $_POST["third_season"]) : '0';
 
 $page_title = !empty($_POST["page_title"]) ? $_POST["page_title"] : '';
 $trash = !empty($_GET["trash"]) ? $_GET["trash"] : '';
@@ -34,8 +37,8 @@ $message_alert = "error";
 if (!empty($third_periods_from) && !empty($third_periods_to) && !empty($sp_id) && !empty($ptype) && !empty($first_id) && !empty($second_id)) {
     if (empty($third_id)) {
         # ---- Insert to database ---- #
-        $query = "INSERT INTO products_category_third (status, products_category_first, products_category_second, periods_from, periods_to, rate_1, rate_2, rate_3, rate_4, charter_1, charter_2, group_1, group_2, transfer_1, transfer_2, pax, extra_hour_1, extra_hour_2, hours_no, extrabeds_1, extrabeds_2, sharingbed_1, sharingbed_2, trash_deleted, last_edit_time) ";
-        $query .= "VALUES (0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, now())";
+        $query = "INSERT INTO products_category_third (status, products_category_first, products_category_second, periods_from, periods_to, rate_1, rate_2, rate_3, rate_4, charter_1, charter_2, group_1, group_2, transfer_1, transfer_2, pax, extra_hour_1, extra_hour_2, hours_no, extrabeds_1, extrabeds_2, extrabeds_3, extrabeds_4, sharingbed_1, sharingbed_2, season, trash_deleted, last_edit_time) ";
+        $query .= "VALUES (0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, now())";
         $result = mysqli_query($mysqli_p, $query);
         $third_id = mysqli_insert_id($mysqli_p);
     }
@@ -159,6 +162,14 @@ if (!empty($third_periods_from) && !empty($third_periods_to) && !empty($sp_id) &
         $bind_types .= "d";
         array_push($params, $third_extrabeds_2);
 
+        $query .= " extrabeds_3 = ?,";
+        $bind_types .= "d";
+        array_push($params, $third_extrabeds_3);
+
+        $query .= " extrabeds_4 = ?,";
+        $bind_types .= "d";
+        array_push($params, $third_extrabeds_4);
+
         $query .= " sharingbed_1 = ?,";
         $bind_types .= "d";
         array_push($params, $third_sharingbed_1);
@@ -166,6 +177,10 @@ if (!empty($third_periods_from) && !empty($third_periods_to) && !empty($sp_id) &
         $query .= " sharingbed_2 = ?,";
         $bind_types .= "d";
         array_push($params, $third_sharingbed_2);
+
+        $query .= " season = ?,";
+        $bind_types .= "d";
+        array_push($params, $third_season);
 
         foreach ($photo as $i => $item) {
             if ($item != "false") {

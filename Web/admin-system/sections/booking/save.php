@@ -14,6 +14,8 @@ $bo_status_email_revise = !empty($_POST["bo_status_email_revise"]) ? $_POST["bo_
 $bo_status_confirm = !empty($_POST["bo_status_confirm"]) ? $_POST["bo_status_confirm"] : '';
 $bo_customertype = !empty($_POST["bo_customertype"]) ? $_POST["bo_customertype"] : '0';
 $bo_company = !empty($_POST["bo_company"]) ? $_POST["bo_company"] : '2';
+$bo_facebook = !empty($_POST["bo_facebook"]) ? $_POST["bo_facebook"] : '';
+$bo_line = !empty($_POST["bo_line"]) ? $_POST["bo_line"] : '';
 
 if ($bo_customertype == 1) {
     $bo_agent = !empty($_POST["bo_agent"]) ? $_POST["bo_agent"] : '0';
@@ -81,6 +83,8 @@ if (!empty($bo_voucher_no) && $bo_customertype > 0) {
         $bo_customer_lastname_text = ($bo_customer_lastname != "") ? $bo_customer_lastname : '-';
         $bo_customer_mobile_text = ($bo_customer_mobile != "") ? $bo_customer_mobile : '-';
         $bo_customer_email_text = ($bo_customer_email != "") ? $bo_customer_email : '-';
+        $bo_facebook_text = ($bo_facebook != "") ? $bo_facebook : '-';
+        $bo_line_text = ($bo_line != "") ? $bo_line : '-';
         $bo_full_receipt_text = ($bo_full_receipt != 2) ? 'แบบเต็ม' : 'ไม่ใช่แบบเต็ม';
         $bo_receipt_name_text = ($bo_receipt_name != "") ? $bo_receipt_name : '-';
         $bo_receipt_address_text = ($bo_receipt_address != "") ? $bo_receipt_address : '-';
@@ -100,6 +104,8 @@ if (!empty($bo_voucher_no) && $bo_customertype > 0) {
             $description_field .= "ชื่อ (ลูกค้า) : " . $bo_customer_firstname_text . "\n";
             $description_field .= "นามสกุล (ลูกค้า) : " . $bo_customer_lastname_text . "\n";
             $description_field .= "เบอร์โทรศัพท์ (ลูกค้า) : " . $bo_customer_mobile_text . "\n";
+            $description_field .= "Facebook : " . $bo_facebook_text . "\n";
+            $description_field .= "Line : " . $bo_line_text . "\n";
             $description_field .= "อีเมล์ (ลูกค้า) : " . $bo_customer_email_text . "\n";
             $description_field .= "ใบเสร็จรับเงิน : " . $bo_full_receipt_text . "\n";
             $description_field .= "ชื่อ : " . $bo_receipt_name_text . "\n";
@@ -127,6 +133,8 @@ if (!empty($bo_voucher_no) && $bo_customertype > 0) {
             $description_field .= ($bo_customer_firstname != $row_booking["customer_firstname"]) ? "ชื่อ (ลูกค้า) : " . $bo_customer_firstname_text . "\n" : "";
             $description_field .= ($bo_customer_lastname != $row_booking["customer_lastname"]) ? "นามสกุล (ลูกค้า) : " . $bo_customer_lastname_text . "\n" : "";
             $description_field .= ($bo_customer_mobile != $row_booking["customer_mobile"]) ? "เบอร์โทรศัพท์ (ลูกค้า) : " . $bo_customer_mobile_text . "\n" : "";
+            $description_field .= ($bo_facebook != $row_booking["facebook"]) ? "Facebook : " . $bo_facebook_text . "\n" : "";
+            $description_field .= ($bo_line != $row_booking["line"]) ? "Line : " . $bo_line_text . "\n" : "";
             $description_field .= ($bo_customer_email != $row_booking["customer_email"]) ? "อีเมล์ (ลูกค้า) : " . $bo_customer_email_text . "\n" : "";
             $description_field .= ($bo_full_receipt != $row_booking["full_receipt"]) ? "ใบเสร็จรับเงิน : " . $bo_full_receipt_text . "\n" : "";
             $description_field .= ($bo_receipt_name != $row_booking["receipt_name"]) ? "ชื่อ : " . $bo_receipt_name_text . "\n" : "";
@@ -177,6 +185,14 @@ if (!empty($bo_voucher_no) && $bo_customertype > 0) {
         $query .= " customer_mobile = ?,";
         $bind_types .= "s";
         array_push($params, $bo_customer_mobile);
+
+        $query .= " facebook = ?,";
+        $bind_types .= "s";
+        array_push($params, $bo_facebook);
+
+        $query .= " line = ?,";
+        $bind_types .= "s";
+        array_push($params, $bo_line);
 
         $query .= " customer_email = ?,";
         $bind_types .= "s";

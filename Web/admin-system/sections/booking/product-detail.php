@@ -71,7 +71,9 @@ $bp_notes = !empty($row["notes"]) ? $row["notes"] : '';
 $bp_no_cars = !empty($row["no_cars"]) ? $row["no_cars"] : '1';
 $bp_no_hours = !empty($row["no_hours"]) ? $row["no_hours"] : '1';
 $bp_no_rooms = !empty($row["no_rooms"]) ? $row["no_rooms"] : '1';
-$bp_extra_beds = !empty($row["extra_beds"]) ? $row["extra_beds"] : '0';
+$bp_season_no = !empty($row["season_no"]) ? $row["season_no"] : '2';
+$bp_extra_beds_adult = !empty($row["extra_beds_adult"]) ? $row["extra_beds_adult"] : '0';
+$bp_extra_beds_child = !empty($row["extra_beds_child"]) ? $row["extra_beds_child"] : '0';
 $bp_share_bed = !empty($row["share_bed"]) ? $row["share_bed"] : '0';
 $bp_foreigner = !empty($row["foreigner"]) ? $row["foreigner"] : '2';
 $bp_foreigner_no = !empty($row["foreigner_no"]) ? $row["foreigner_no"] : '0';
@@ -160,7 +162,8 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-3" id="div-checkin-date">
-                                    <label for="bp_checkin_date"> วันที่เช็คอิน </label> <!--- (<span style="color:#FF0000">เฉพาะสินค้าประเภทโรงแรมเท่านั้น</span>) --->
+                                    <label for="bp_checkin_date"> วันที่เช็คอิน </label>
+                                    <!--- (<span style="color:#FF0000">เฉพาะสินค้าประเภทโรงแรมเท่านั้น</span>) --->
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="inputCheckin"><i class="ti-timer"></i></span>
@@ -170,7 +173,8 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-3" id="div-checkout-date">
-                                    <label for="bp_checkout_date">วันที่เช็คเอาท์ </label> <!--- (<span style="color:#FF0000">เฉพาะสินค้าประเภทโรงแรมเท่านั้น</span>) --->
+                                    <label for="bp_checkout_date">วันที่เช็คเอาท์ </label>
+                                    <!--- (<span style="color:#FF0000">เฉพาะสินค้าประเภทโรงแรมเท่านั้น</span>) --->
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="inputCheckout"><i class="ti-timer"></i></span>
@@ -223,7 +227,8 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
 
                             <div class="form-row">
                                 <div class="col-md-2 mb-3" id="div-transfer">
-                                    <label for="bp_transfer"> เพิ่มรถรับส่ง </label> <!--- (<span style="color:#FF0000">เฉพาะทัวร์และกิจกรรมเท่านั้น</span>) --->
+                                    <label for="bp_transfer"> เพิ่มรถรับส่ง </label>
+                                    <!--- (<span style="color:#FF0000">เฉพาะทัวร์และกิจกรรมเท่านั้น</span>) --->
                                     <div class="custom-control custom-checkbox mb-3">
                                         <input type="checkbox" class="custom-control-input" id="bp_transfer" name="bp_transfer" <?php echo ($bp_transfer != 2 || !isset($bp_transfer)) ? 'checked' : ''; ?> value="1" onclick="calRate()" <?php echo ($ptype != 1 && $ptype != 2) ? 'disabled' : ''; ?>>
                                         <label class="custom-control-label" for="bp_transfer">ใช่</label>
@@ -233,7 +238,7 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                 <div class="col-md-3 mb-3">
                                     <label for="bp_pickup">สถานที่รับ <a href="#pickup" onclick="add_place('pickup', 'add_place')"><i class="fas fa-plus" style="color:#0FFF00"></i></a> </label>
                                     <div class="input-group" id="select_pickup">
-                                        <select class="custom-select" id="bp_pickup" name="bp_pickup" onchange="checkdropoff('chang', 'checkdropoff');">
+                                        <select class="select2 form-control custom-select" id="bp_pickup" name="bp_pickup" onchange="checkdropoff('chang', 'checkdropoff');">
                                             <option value="0" id="zero_dropoff">กรุณาเลือกสถานที่รับ</option>
                                             <?php
                                             $query_pickup = "SELECT * FROM place WHERE status = '1' AND pickup = '1' ";
@@ -253,7 +258,7 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                 <div class="col-md-3 mb-3">
                                     <label for="bp_dropoff">สถานที่ส่ง <a href="#dropoff" onclick="add_place('dropoff', 'add_place')"><i class="fas fa-plus" style="color:#0FFF00"></i></a> </label>
                                     <div class="input-group" id="select_dropoff">
-                                        <select class="custom-select" id="bp_dropoff" name="bp_dropoff">
+                                        <select class="select2 form-control custom-select" id="bp_dropoff" name="bp_dropoff">
                                             <option value="0" id="zero_dropoff">กรุณาเลือกสถานที่ส่ง</option>
                                             <?php
                                             $query_dropoff = "SELECT * FROM place WHERE status = '1' AND dropoff = '1' ";
@@ -312,7 +317,8 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                     </select>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="bp_pickup_time">เวลารับ </label> <!--- (<span style="color:#FF0000">เฉพาะสินค้าประเภทรถรับส่งเท่านั้น</span>) --->
+                                    <label for="bp_pickup_time">เวลารับ </label>
+                                    <!--- (<span style="color:#FF0000">เฉพาะสินค้าประเภทรถรับส่งเท่านั้น</span>) --->
                                     <div class="input-group clockpicker" data-placement="bottom" data-align="top" data-autoclose="true" onchange="checkHours()">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="inputPickuptime"><i class="ti-timer"></i></span>
@@ -322,7 +328,8 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="bp_dropoff_time">เวลาส่ง </label> <!--- (<span style="color:#FF0000">เฉพาะสินค้าประเภทรถรับส่งเท่านั้น</span>) --->
+                                    <label for="bp_dropoff_time">เวลาส่ง </label>
+                                    <!--- (<span style="color:#FF0000">เฉพาะสินค้าประเภทรถรับส่งเท่านั้น</span>) --->
                                     <div class="input-group">
                                         <!-- <div class="input-group clockpicker" data-placement="bottom" data-align="top" data-autoclose="true"> -->
                                         <div class="input-group-prepend">
@@ -334,9 +341,16 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                 </div>
                             </div>
 
-                            
 
                             <div class="form-row" id="div-type-hotel">
+                                <div class="col-md-1 mb-3">
+                                    <label for="bp_season_no">เทศกาล, วันหยุด </label>
+                                    <!--- (<span style="color:#FF0000">เฉพาะทัวร์และกิจกรรมเท่านั้น</span>) --->
+                                    <div class="custom-control custom-checkbox mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="bp_season_no" name="bp_season_no" <?php echo ($bp_season_no != 2 || !isset($bp_season_no)) ? 'checked' : ''; ?> value="1" onclick="calRate()" <?php echo ($ptype != 4) ? 'disabled' : ''; ?>>
+                                        <label class="custom-control-label" for="bp_season_no">เพิ่ม</label>
+                                    </div>
+                                </div>
                                 <div class="col-md-1 mb-3" style="text-align:center">
                                     <label for="bp_no_rooms">จำนวนห้อง</label>
                                     <select class="custom-select" id="bp_no_rooms" name="bp_no_rooms" onchange="calRate()" <?php echo ($ptype != 4) ? 'disabled' : ''; ?>>
@@ -344,9 +358,15 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                     </select>
                                 </div>
                                 <div class="col-md-1 mb-3" style="text-align:center">
-                                    <label for="bp_extra_beds">จำนวนเตียงเสริม</label>
-                                    <select class="custom-select" id="bp_extra_beds" name="bp_extra_beds" onchange="calRate()" <?php echo ($ptype != 4) ? 'disabled' : ''; ?>>
-                                        <?php list_number($bp_extra_beds, '0', '501'); ?>
+                                    <label for="bp_extra_beds_adult">จำนวนเตียงเสริมผู้ใหญ่</label>
+                                    <select class="custom-select" id="bp_extra_beds_adult" name="bp_extra_beds_adult" onchange="calRate()" <?php echo ($ptype != 4) ? 'disabled' : ''; ?>>
+                                        <?php list_number($bp_extra_beds_adult, '0', '501'); ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-1 mb-3" style="text-align:center">
+                                    <label for="bp_extra_beds_child">จำนวนเตียงเสริมเด็ก</label>
+                                    <select class="custom-select" id="bp_extra_beds_child" name="bp_extra_beds_child" onchange="calRate()" <?php echo ($ptype != 4) ? 'disabled' : ''; ?>>
+                                        <?php list_number($bp_extra_beds_child, '0', '501'); ?>
                                     </select>
                                 </div>
                                 <div class="col-md-1 mb-3" style="text-align:center">
@@ -361,14 +381,16 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
 
                             <div class="form-row" id="type-tour-activity">
                                 <div class="col-md-3 mb-3">
-                                    <label for="bp_foreigner">ชาวต่างชาติ </label> <!--- (<span style="color:#FF0000">เฉพาะทัวร์และกิจกรรมเท่านั้น</span>) --->
+                                    <label for="bp_foreigner">ชาวต่างชาติ </label>
+                                    <!--- (<span style="color:#FF0000">เฉพาะทัวร์และกิจกรรมเท่านั้น</span>) --->
                                     <div class="custom-control custom-checkbox mb-3">
                                         <input type="checkbox" class="custom-control-input" id="bp_foreigner" name="bp_foreigner" <?php echo ($bp_foreigner != 2 || !isset($bp_foreigner)) ? 'checked' : ''; ?> value="1" onclick="calRate()" <?php echo ($ptype != 1 && $ptype != 2) ? 'disabled' : ''; ?>>
                                         <label class="custom-control-label" for="bp_foreigner">มี</label>
                                     </div>
                                 </div>
                                 <div class="col-md-1 mb-3" style="text-align:center">
-                                    <label for="bp_foreigner_no">จำนวนคน</label> <!--- (<span style="color:#FF0000">ชาวต่างชาติ</span>) --->
+                                    <label for="bp_foreigner_no">จำนวนคน</label>
+                                    <!--- (<span style="color:#FF0000">ชาวต่างชาติ</span>) --->
                                     <select class="custom-select" id="bp_foreigner_no" name="bp_foreigner_no" <?php echo ($ptype != 1 && $ptype != 2) ? 'disabled' : ''; ?>>
                                         <?php list_number($bp_foreigner_no, '0', '501'); ?>
                                     </select>
@@ -385,12 +407,14 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                 </div>
                             </div>
 
-                            <div class="form-row" id="div-calrateproduct">
-                                <!-- function: calRate -->
+                            <div id="div-calrateproduct">
+                            </div>
+
+                            <!-- <div class="form-row" >
                                 <div class="col-md-12 mb-3" style="text-align:center">
                                     <span style="font-size:16px; font-weight:bold; color:#FF0000; margin-left: auto; margin-right: auto">กรุณาเลือกสินค้าก่อน</span>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <hr>
 
@@ -657,6 +681,7 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
         } else {
             var foreigner_price_rep = 0;
         }
+        var season_no = document.getElementById('bp_season_no').checked;
 
         jQuery.ajax({
             url: "../inc/ajax/booking/calrateproduct.php",
@@ -674,9 +699,11 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                 bp_no_cars: $("#bp_no_cars").val(),
                 bp_no_hours: $("#bp_no_hours").val(),
                 bp_no_rooms: $("#bp_no_rooms").val(),
-                bp_extra_beds: $("#bp_extra_beds").val(),
+                bp_extra_beds_adult: $("#bp_extra_beds_adult").val(),
+                bp_extra_beds_child: $("#bp_extra_beds_child").val(),
                 bp_share_bed: $("#bp_share_bed").val(),
                 bp_foreigner: foreigner,
+                bp_season_no: season_no,
                 bp_foreigner_price: foreigner_price_rep,
                 price_latest_before: $("#price_latest_before").val()
             },
@@ -728,22 +755,22 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
 
     }
 
-    function inputHide(){
+    function inputHide() {
         var ptype = document.getElementById('ptype')
-        if(ptype.value == '1' || ptype.value == '2'){
+        if (ptype.value == '1' || ptype.value == '2') {
             // Tour and Activity 
             document.getElementById('div-checkin-date').style.display = "none"
             document.getElementById('div-checkout-date').style.display = "none"
             document.getElementById('div-type-transfer').style.display = "none"
             document.getElementById('div-type-hotel').style.display = "none"
-        } else if(ptype.value == '3') {
+        } else if (ptype.value == '3') {
             // transfer
             document.getElementById('div-checkin-date').style.display = "none"
             document.getElementById('div-checkout-date').style.display = "none"
             document.getElementById('div-type-hotel').style.display = "none"
             document.getElementById('type-tour-activity').style.display = "none"
             document.getElementById('div-transfer').style.display = "none"
-        } else if(ptype.value == '4') {
+        } else if (ptype.value == '4') {
             // Hotel
             document.getElementById('div-travel-date').style.display = "none"
             document.getElementById('type-tour-activity').style.display = "none"

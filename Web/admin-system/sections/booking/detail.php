@@ -31,6 +31,8 @@ $bo_customer_firstname = !empty($row["customer_firstname"]) ? $row["customer_fir
 $bo_customer_lastname = !empty($row["customer_lastname"]) ? $row["customer_lastname"] : '';
 $bo_customer_mobile = !empty($row["customer_mobile"]) ? $row["customer_mobile"] : '';
 $bo_customer_email = !empty($row["customer_email"]) ? $row["customer_email"] : '';
+$bo_facebook = !empty($row["facebook"]) ? $row["facebook"] : '';
+$bo_line = !empty($row["line"]) ? $row["line"] : '';
 $bo_full_receipt = !empty($row["full_receipt"]) ? $row["full_receipt"] : '2';
 $bo_receipt_name = !empty($row["receipt_name"]) ? $row["receipt_name"] : '';
 $bo_receipt_address = !empty($row["receipt_address"]) ? $row["receipt_address"] : '';
@@ -270,19 +272,6 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                         <div class="invalid-feedback">กรุณาระบุเบอร์โทรศัพท์ (ลูกค้า)</div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 mb-3" id="customerdiv">
-                                    <label for="bo_customer_email">อีเมล์ (ลูกค้า)</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputEmail"><i class="ti-email"></i></span>
-                                        </div>
-                                        <input type="text" class="form-control" id="bo_customer_email" name="bo_customer_email" placeholder="" aria-describedby="inputEmail" value="<?php echo $bo_customer_email; ?>">
-                                        <div class="invalid-feedback">กรุณาระบุอีเมล์ (ลูกค้า)</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
                                 <div class="col-md-3 mb-3">
                                     <label for="bo_facebook"> Facebook </label>
                                     <div class="input-group">
@@ -299,6 +288,16 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                             <span class="input-group-text" id="inputFirstname"><i class="ti-user"></i></span>
                                         </div>
                                         <input type="text" class="form-control" id="bo_line" name="bo_line" placeholder="" aria-describedby="inputFirstname" value="<?php echo $bo_line; ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3" id="customerdiv">
+                                    <label for="bo_customer_email">อีเมล์ (ลูกค้า)</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputEmail"><i class="ti-email"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" id="bo_customer_email" name="bo_customer_email" placeholder="" aria-describedby="inputEmail" value="<?php echo $bo_customer_email; ?>">
+                                        <div class="invalid-feedback">กรุณาระบุอีเมล์ (ลูกค้า)</div>
                                     </div>
                                 </div>
                             </div>
@@ -567,7 +566,8 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                                         <th style="vertical-align:middle">วันที่เช็คอิน</th>
                                                         <th style="vertical-align:middle">วันที่เช็คเอาท์</th>
                                                         <th style="vertical-align:middle">จำนวนห้อง</th>
-                                                        <th style="vertical-align:middle">จำนวนเตียงเสริม</th>
+                                                        <th style="vertical-align:middle">จำนวนเตียงเสริมผู้ใหญ่</th>
+                                                        <th style="vertical-align:middle">จำนวนเตียงเสริมเด็ก</th>
                                                         <th style="vertical-align:middle">จำนวนแชร์เตียง</th>
                                                         <th style="vertical-align:middle">ราคา</th>
                                                         <th style="vertical-align:middle">สถานะการส่งอีเมล์</th>
@@ -609,7 +609,8 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                                     <td align="center"><span style="color:#2E8E9C"><?php echo $checkin_date; ?></span></td>
                                                     <td align="center"><span style="color:#2E8E9C"><?php echo $checkout_date; ?></span></td>
                                                     <td align="center"><?php echo number_format($row_products["no_rooms"]); ?></td>
-                                                    <td align="center"><?php echo number_format($row_products["extra_beds"]); ?></td>
+                                                    <td align="center"><?php echo number_format($row_products["extra_beds_adult"]); ?></td>
+                                                    <td align="center"><?php echo number_format($row_products["extra_beds_child"]); ?></td>
                                                     <td align="center"><?php echo number_format($row_products["share_bed"]); ?></td>
                                                 <?php } ?>
                                                 <td align="center"><span style="color:#0D84DE"><?php echo $price_latest; ?></span></td>
@@ -728,7 +729,8 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                                                     echo "<span style='font-weight: bold;'> สินค้า : </span>" . $row_products["pcsname"] . "</br>";
                                                                     echo "<span style='font-weight: bold;'> ผู้ใหญ๋/เด็ก/ทารก/FOC : </span>" . $row_products["adults"] . "/" . $row_products["children"] . "/" . $row_products["infant"] . "/" . $row_products["foc"] . "</br>";
                                                                     echo "<span style='font-weight: bold;'> จำนวนห้อง : </span>" . $row_products["no_rooms"] . "</br>";
-                                                                    echo "<span style='font-weight: bold;'> จำนวนเตียงเสริม : </span>" . $row_products["extra_beds"] . "</br>";
+                                                                    echo "<span style='font-weight: bold;'> จำนวนเตียงเสริมผู้ใหญ่ : </span>" . $row_products["extra_beds_adult"] . "</br>";
+                                                                    echo "<span style='font-weight: bold;'> จำนวนเตียงเสริมเด็ก : </span>" . $row_products["extra_beds_child"] . "</br>";
                                                                     echo "<span style='font-weight: bold;'> จำนวนแชร์เตียง : </span>" . $row_products["share_bed"] . "</br>";
                                                                     echo "<span style='font-weight: bold;'> สถานที่รับ : </span>" . $m_pickup . "</br>";
                                                                     echo "<span style='font-weight: bold;'> สถานที่ส่ง : </span>" . $m_dropoff . "</br>";
@@ -766,8 +768,15 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                             <div class="card-body">
                                 <h4 class="card-title"> ธุรกรรมการชำระเงิน</h4>
                                 <!-- <h6 class="card-subtitle">Description</h6> -->
-                                <a href="<?php echo './?mode=booking/payment-detail&booking=' . $bo_id; ?>" class="btn btn-info m-t-10 m-r-15"><i class="fa fa-plus-circle"></i> เพิ่มธุรกรรม </a>
-                                <a href="#print" onclick="printPayment(<?php echo $bo_id; ?>)" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a>
+                                <form method="post" action="<?php echo './?mode=booking/payment-detail&booking=' . $bo_id; ?>">
+                                    <input type="hidden" id="pm_total" name="pm_total" value="" />
+                                    <input type="hidden" id="pm_paid" name="pm_paid" value="" />
+                                    <input type="hidden" id="pm_balance" name="pm_balance" value="" />
+                                    <button id="btn_payment" type="submit" class="btn btn-info m-t-10 m-r-15"><i class="fa fa-plus-circle"></i> เพิ่มธุรกรรม </button>
+                                    <a href="#print" onclick="printPayment(<?php echo $bo_id; ?>)" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a>
+                                </form>
+                                <!-- <a href="<?php echo './?mode=booking/payment-detail&booking=' . $bo_id; ?>" class="btn btn-info m-t-10 m-r-15"><i class="fa fa-plus-circle"></i> เพิ่มธุรกรรม </a> -->
+                                <!-- <a href="#print" onclick="printPayment(<?php echo $bo_id; ?>)" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a> -->
                                 <!-- <a href="<?php echo './?mode=booking/print-payment&id=' . $bo_id; ?>" class="btn btn-info m-t-10 m-r-15" style="float:right;"><i class="fa fa-print"></i> พิมพ์ Voucher </a> -->
                                 <div class="table-responsive m-t-10">
                                     <table id="paid-table" class="table display table-bordered table-striped no-wrap" style="width:100%">
@@ -1002,7 +1011,16 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
         document.getElementById('price_paid').innerHTML = '<?php echo number_format($price_paid); ?>';
         document.getElementById('price_balance').innerHTML = '<?php echo number_format($price_balance); ?>';
         var total_balance = document.getElementById('total_balance');
+        var pm_total = document.getElementById('pm_total');
+        var pm_paid = document.getElementById('pm_paid');
+        var pm_balance = document.getElementById('pm_balance');
         total_balance.value = '<?php echo $price_balance != 0 ? $price_balance : 0; ?>';
+        pm_total.value = '<?php echo $price_total != 0 ? $price_total : 0; ?>';
+        pm_paid.value = '<?php echo $price_paid != 0 ? $price_paid : 0; ?>';
+        pm_balance.value = '<?php echo $price_balance != 0 ? $price_balance : 0; ?>';
+        if (pm_balance.value == 0) {
+            document.getElementById('btn_payment').disabled = true;
+        }
 
         function checkCancel() {
             var check_cancel = document.getElementById('check_cancel')
@@ -1021,25 +1039,29 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
             for (var i = 0; i < type_pay.length; i++) {
                 type_arr.push(type_pay[i].value);
             }
-            jQuery.ajax({
-                url: "../inc/ajax/booking/printpayment.php",
-                data: {
-                    bookval: bo_id.value,
-                    sum_paid: sum_paid.value,
-                    total_balance: total_balance.value,
-                    type_arr: type_arr
-                },
-                type: "POST",
-                success: function(response) {
-                    // $("#test-mail").html(response)
-                    if (response) {
-                        window.open(response, '_blank');
+            if (sum_paid.value > 0) {
+                jQuery.ajax({
+                    url: "../inc/ajax/booking/printpayment.php",
+                    data: {
+                        bookval: bo_id.value,
+                        sum_paid: sum_paid.value,
+                        total_balance: total_balance.value,
+                        type_arr: type_arr
+                    },
+                    type: "POST",
+                    success: function(response) {
+                        // $("#test-mail").html(response)
+                        if (response) {
+                            window.open(response, '_blank');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('พิมพ์ข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
                     }
-                },
-                error: function() {
-                    Swal.fire('พิมพ์ข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
-                }
-            });
+                });
+            } else {
+                Swal.fire('พิมพ์ข้อมูลไม่สำเร็จ!', 'กรุณาเพิ่มธุรกรรม', 'error')
+            }
         }
 
         function deletePayment(payval, bookval, prodtype) {

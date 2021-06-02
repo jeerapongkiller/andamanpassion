@@ -53,8 +53,11 @@ $third_extra_hour_1 = !empty($row["extra_hour_1"]) ? $row["extra_hour_1"] : '0';
 $third_extra_hour_2 = !empty($row["extra_hour_2"]) ? $row["extra_hour_2"] : '0';
 $third_extrabeds_1 = !empty($row["extrabeds_1"]) ? $row["extrabeds_1"] : '0';
 $third_extrabeds_2 = !empty($row["extrabeds_2"]) ? $row["extrabeds_2"] : '0';
+$third_extrabeds_3 = !empty($row["extrabeds_3"]) ? $row["extrabeds_3"] : '0';
+$third_extrabeds_4 = !empty($row["extrabeds_4"]) ? $row["extrabeds_4"] : '0';
 $third_sharingbed_1 = !empty($row["sharingbed_1"]) ? $row["sharingbed_1"] : '0';
 $third_sharingbed_2 = !empty($row["sharingbed_2"]) ? $row["sharingbed_2"] : '0';
+$third_season = !empty($row["season"]) ? $row["season"] : '0';
 ?>
 
 <!-- ============================================================== -->
@@ -77,7 +80,8 @@ $third_sharingbed_2 = !empty($row["sharingbed_2"]) ? $row["sharingbed_2"] : '0';
                         <li class="breadcrumb-item"><a href="./?mode=supplier/list">ซัพพลายเออร์</a></li>
                         <li class="breadcrumb-item"><a href="./?mode=supplier/detail&id=<?php echo $sp_id; ?>"><?php echo $sp_company; ?></a></li>
                         <li class="breadcrumb-item">
-                            <a href="./?mode=supplier/product-list&ptype=<?php echo $ptype; ?>&supplier=<?php echo $sp_id; ?>">รายการสินค้า (<?php echo $ptype_name; ?>)</a></li>
+                            <a href="./?mode=supplier/product-list&ptype=<?php echo $ptype; ?>&supplier=<?php echo $sp_id; ?>">รายการสินค้า (<?php echo $ptype_name; ?>)</a>
+                        </li>
                         <!-- <li class="breadcrumb-item">
                                     <a href="./?mode=supplier/product-first-detail&id=<?php echo $catefirst; ?>&ptype=<?php echo $ptype; ?>&supplier=<?php echo $supplier; ?>"><?php echo $first_name; ?></a></li>
                                 <li class="breadcrumb-item">
@@ -158,7 +162,7 @@ $third_sharingbed_2 = !empty($row["sharingbed_2"]) ? $row["sharingbed_2"] : '0';
                             </div>
                             <div class="form-row">
                                 <div class="col-md-3 mb-3">
-                                    <label for="third_rate_1">ราคาผู้ใหญ่/คัน/ห้อง/คืน</label>
+                                    <label for="third_rate_1" id="label_third_rate_1">ราคาผู้ใหญ่/คัน/ห้อง/คืน</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="inputRate1"><i class="ti-wallet"></i></span>
@@ -168,7 +172,7 @@ $third_sharingbed_2 = !empty($row["sharingbed_2"]) ? $row["sharingbed_2"] : '0';
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="third_rate_2">ราคาผู้ใหญ่/คัน/ห้อง/คืน ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
+                                    <label for="third_rate_2" id="label_third_rate_2">ราคาผู้ใหญ่/คัน/ห้อง/คืน ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="inputRate2"><i class="ti-wallet"></i></span>
@@ -177,206 +181,249 @@ $third_sharingbed_2 = !empty($row["sharingbed_2"]) ? $row["sharingbed_2"] : '0';
                                         <div class="invalid-feedback">กรุณาระบุราคาผู้ใหญ่/คัน/ห้อง/คืน (ราคาขาย)</div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_rate_3">ราคาเด็ก</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputRate3"><i class="ti-wallet"></i></span>
-                                        </div>
-                                        <input type="text" class="form-control" id="third_rate_3" name="third_rate_3" placeholder="" aria-describedby="inputRate3" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_rate_3); ?>" oninput="priceformat('third_rate_3');" required <?php if ($ptype != 1 && $ptype != 2) {
-                                                                                                                                                                                                                                                                                                                    echo "readonly";
-                                                                                                                                                                                                                                                                                                                } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคาเด็ก</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_rate_4">ราคาเด็ก ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputRate4"><i class="ti-wallet"></i></span>
-                                        </div>
-                                        <input type="text" class="form-control" id="third_rate_4" name="third_rate_4" placeholder="" aria-describedby="inputRate4" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_rate_4); ?>" oninput="priceformat('third_rate_4');" required <?php if ($ptype != 1 && $ptype != 2) {
-                                                                                                                                                                                                                                                                                                                    echo "readonly";
-                                                                                                                                                                                                                                                                                                                } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคาเด็ก (ราคาขาย)</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_charter_1">ราคาเช่าเหมาลำ</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputCharter1"><i class="ti-wallet"></i></span>
-                                        </div>
-                                        <input type="text" class="form-control" id="third_charter_1" name="third_charter_1" placeholder="" aria-describedby="inputCharter1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_charter_1); ?>" oninput="priceformat('third_charter_1');" required <?php if ($ptype != 1) {
-                                                                                                                                                                                                                                                                                                                                    echo "readonly";
-                                                                                                                                                                                                                                                                                                                                } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคาเช่าเหมาลำ</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_charter_2">ราคาเช่าเหมาลำ ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputCharter2"><i class="ti-wallet"></i></span>
-                                        </div>
-                                        <input type="text" class="form-control" id="third_charter_2" name="third_charter_2" placeholder="" aria-describedby="inputCharter2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_charter_2); ?>" oninput="priceformat('third_charter_2');" required <?php if ($ptype != 1) {
-                                                                                                                                                                                                                                                                                                                                    echo "readonly";
-                                                                                                                                                                                                                                                                                                                                } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคาเช่าเหมาลำ (ราคาขาย)</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_group_1">ราคากลุ่ม</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputGroup1"><i class="ti-wallet"></i></span>
-                                        </div>
-                                        <input type="text" class="form-control" id="third_group_1" name="third_group_1" placeholder="" aria-describedby="inputGroup1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_group_1); ?>" oninput="priceformat('third_group_1');" required <?php if ($ptype != 2) {
+                                <?php if ($ptype == '1' || $ptype == '2') { ?>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_rate_3" id="label_third_rate_3">ราคาเด็ก</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputRate3"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_rate_3" name="third_rate_3" placeholder="" aria-describedby="inputRate3" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_rate_3); ?>" oninput="priceformat('third_rate_3');" required <?php if ($ptype != 1 && $ptype != 2) {
                                                                                                                                                                                                                                                                                                                         echo "readonly";
                                                                                                                                                                                                                                                                                                                     } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคากลุ่ม</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_group_2">ราคากลุ่ม ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputGroup2"><i class="ti-wallet"></i></span>
+                                            <div class="invalid-feedback">กรุณาระบุราคาเด็ก</div>
                                         </div>
-                                        <input type="text" class="form-control" id="third_group_2" name="third_group_2" placeholder="" aria-describedby="inputGroup2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_group_2); ?>" oninput="priceformat('third_group_2');" required <?php if ($ptype != 2) {
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_rate_4" id="label_third_rate_4">ราคาเด็ก ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputRate4"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_rate_4" name="third_rate_4" placeholder="" aria-describedby="inputRate4" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_rate_4); ?>" oninput="priceformat('third_rate_4');" required <?php if ($ptype != 1 && $ptype != 2) {
                                                                                                                                                                                                                                                                                                                         echo "readonly";
                                                                                                                                                                                                                                                                                                                     } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคากลุ่ม (ราคาขาย)</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_pax">จำนวนคน (<span style="color:#FF0000; font-weight:bold">ราคาเช่าเหมาลำ/ราคากลุ่ม</span>)</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputPax"><i class="ti-user"></i></span>
+                                            <div class="invalid-feedback">กรุณาระบุราคาเด็ก (ราคาขาย)</div>
                                         </div>
-                                        <input type="text" class="form-control" id="third_pax" name="third_pax" placeholder="" aria-describedby="inputPax" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_pax); ?>" oninput="priceformat('third_pax');" required <?php if ($ptype != 1 && $ptype != 2) {
-                                                                                                                                                                                                                                                                                                    echo "readonly";
-                                                                                                                                                                                                                                                                                                } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุจำนวนคน</div>
                                     </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_transfer_1">ราคารถรับส่ง</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputTransfer1"><i class="ti-wallet"></i></span>
-                                        </div>
-                                        <input type="text" class="form-control" id="third_transfer_1" name="third_transfer_1" placeholder="" aria-describedby="inputTransfer1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_transfer_1); ?>" oninput="priceformat('third_transfer_1');" required <?php if ($ptype != 1 && $ptype != 2) {
+                                <?php }
+                                if ($ptype == '1') { ?>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_charter_1" id="label_third_charter_1">ราคาเช่าเหมาลำ ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputCharter1"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_charter_1" name="third_charter_1" placeholder="" aria-describedby="inputCharter1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_charter_1); ?>" oninput="priceformat('third_charter_1');" required <?php if ($ptype != 1) {
                                                                                                                                                                                                                                                                                                                                         echo "readonly";
                                                                                                                                                                                                                                                                                                                                     } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคารถรับส่ง</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_transfer_2">ราคารถรับส่ง ( <span style="color:#3DB3E4; font-weight:bold">ราคาขาย</span> )</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputTransfer2"><i class="ti-wallet"></i></span>
+                                            <div class="invalid-feedback">กรุณาระบุราคาเช่าเหมาลำ</div>
                                         </div>
-                                        <input type="text" class="form-control" id="third_transfer_2" name="third_transfer_2" placeholder="" aria-describedby="inputTransfer2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_transfer_2); ?>" oninput="priceformat('third_transfer_2');" required <?php if ($ptype != 1 && $ptype != 2) {
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_charter_2" id="label_third_charter_2">ราคาเช่าเหมาลำ ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputCharter2"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_charter_2" name="third_charter_2" placeholder="" aria-describedby="inputCharter2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_charter_2); ?>" oninput="priceformat('third_charter_2');" required <?php if ($ptype != 1) {
                                                                                                                                                                                                                                                                                                                                         echo "readonly";
                                                                                                                                                                                                                                                                                                                                     } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคารถรับส่ง (ราคาขาย)</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_hours_no">จำนวนชั่วโมง</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputHours"><i class="ti-timer"></i></span>
+                                            <div class="invalid-feedback">กรุณาระบุราคาเช่าเหมาลำ (ราคาขาย)</div>
                                         </div>
-                                        <input type="text" class="form-control" id="third_hours_no" name="third_hours_no" placeholder="" aria-describedby="inputHours" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_hours_no); ?>" oninput="priceformat('third_hours_no');" required <?php if ($ptype != 3) {
+                                    </div>
+                                <?php }
+                                if ($ptype == '2') { ?>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_group_1" id="label_third_group_1">ราคากลุ่ม ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputGroup1"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_group_1" name="third_group_1" placeholder="" aria-describedby="inputGroup1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_group_1); ?>" oninput="priceformat('third_group_1');" required <?php if ($ptype != 2) {
                                                                                                                                                                                                                                                                                                                             echo "readonly";
                                                                                                                                                                                                                                                                                                                         } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุจำนวนชั่วโมง</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_extra_hour_1">ราคาต่อชั่วโมง</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputExtrahour1"><i class="ti-wallet"></i></span>
+                                            <div class="invalid-feedback">กรุณาระบุราคากลุ่ม (ราคาทุน)</div>
                                         </div>
-                                        <input type="text" class="form-control" id="third_extra_hour_1" name="third_extra_hour_1" placeholder="" aria-describedby="inputExtrahour1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_extra_hour_1); ?>" oninput="priceformat('third_extra_hour_1');" required <?php if ($ptype != 3) {
-                                                                                                                                                                                                                                                                                                                                                echo "readonly";
-                                                                                                                                                                                                                                                                                                                                            } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคาต่อชั่วโมง</div>
                                     </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_extra_hour_2">ราคาต่อชั่วโมง ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputExtrahour2"><i class="ti-wallet"></i></span>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_group_2" id="label_third_group_2">ราคากลุ่ม ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputGroup2"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_group_2" name="third_group_2" placeholder="" aria-describedby="inputGroup2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_group_2); ?>" oninput="priceformat('third_group_2');" required <?php if ($ptype != 2) {
+                                                                                                                                                                                                                                                                                                                            echo "readonly";
+                                                                                                                                                                                                                                                                                                                        } ?>>
+                                            <div class="invalid-feedback">กรุณาระบุราคากลุ่ม (ราคาขาย)</div>
                                         </div>
-                                        <input type="text" class="form-control" id="third_extra_hour_2" name="third_extra_hour_2" placeholder="" aria-describedby="inputExtrahour2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_extra_hour_2); ?>" oninput="priceformat('third_extra_hour_2');" required <?php if ($ptype != 3) {
-                                                                                                                                                                                                                                                                                                                                                echo "readonly";
-                                                                                                                                                                                                                                                                                                                                            } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคาต่อชั่วโมง (ราคาขาย)</div>
                                     </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_extrabeds_1">ราคาเตียงเสริม</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputExtrabeds1"><i class="ti-wallet"></i></span>
+                                <?php }
+                                if ($ptype == '1' || $ptype == '2') { ?>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_pax" id="label_third_pax">จำนวนคน (<span style="color:#3DB3E4; font-weight:bold">ราคาเช่าเหมาลำ/ราคากลุ่ม</span>)</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputPax"><i class="ti-user"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_pax" name="third_pax" placeholder="" aria-describedby="inputPax" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_pax); ?>" oninput="priceformat('third_pax');" required <?php if ($ptype != 1 && $ptype != 2) {
+                                                                                                                                                                                                                                                                                                        echo "readonly";
+                                                                                                                                                                                                                                                                                                    } ?>>
+                                            <div class="invalid-feedback">กรุณาระบุจำนวนคน</div>
                                         </div>
-                                        <input type="text" class="form-control" id="third_extrabeds_1" name="third_extrabeds_1" placeholder="" aria-describedby="inputExtrabeds1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_extrabeds_1); ?>" oninput="priceformat('third_extrabeds_1');" required <?php if ($ptype != 4) {
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_transfer_1" id="label_third_transfer_1">ราคารถรับส่ง ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputTransfer1"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_transfer_1" name="third_transfer_1" placeholder="" aria-describedby="inputTransfer1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_transfer_1); ?>" oninput="priceformat('third_transfer_1');" required <?php if ($ptype != 1 && $ptype != 2) {
                                                                                                                                                                                                                                                                                                                                             echo "readonly";
                                                                                                                                                                                                                                                                                                                                         } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคาเตียงเสริม</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_extrabeds_2">ราคาเตียงเสริม ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputExtrabeds2"><i class="ti-wallet"></i></span>
+                                            <div class="invalid-feedback">กรุณาระบุราคารถรับส่ง (ราคาทุน)</div>
                                         </div>
-                                        <input type="text" class="form-control" id="third_extrabeds_2" name="third_extrabeds_2" placeholder="" aria-describedby="inputExtrabeds2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_extrabeds_2); ?>" oninput="priceformat('third_extrabeds_2');" required <?php if ($ptype != 4) {
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_transfer_2" id="label_third_transfer_2">ราคารถรับส่ง ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputTransfer2"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_transfer_2" name="third_transfer_2" placeholder="" aria-describedby="inputTransfer2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_transfer_2); ?>" oninput="priceformat('third_transfer_2');" required <?php if ($ptype != 1 && $ptype != 2) {
                                                                                                                                                                                                                                                                                                                                             echo "readonly";
                                                                                                                                                                                                                                                                                                                                         } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคาเตียงเสริม (ราคาขาย)</div>
+                                            <div class="invalid-feedback">กรุณาระบุราคารถรับส่ง (ราคาขาย)</div>
+                                        </div>
                                     </div>
-                                </div>
+                                <?php }
+                                if ($ptype == '3') { ?>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_hours_no" id="label_third_hours_no">จำนวนชั่วโมง</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputHours"><i class="ti-timer"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_hours_no" name="third_hours_no" placeholder="" aria-describedby="inputHours" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_hours_no); ?>" oninput="priceformat('third_hours_no');" required <?php if ($ptype != 3) {
+                                                                                                                                                                                                                                                                                                                                echo "readonly";
+                                                                                                                                                                                                                                                                                                                            } ?>>
+                                            <div class="invalid-feedback">กรุณาระบุจำนวนชั่วโมง</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_extra_hour_1" id="label_third_extra_hour_1">ราคาต่อชั่วโมง ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputExtrahour1"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_extra_hour_1" name="third_extra_hour_1" placeholder="" aria-describedby="inputExtrahour1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_extra_hour_1); ?>" oninput="priceformat('third_extra_hour_1');" required <?php if ($ptype != 3) {
+                                                                                                                                                                                                                                                                                                                                                    echo "readonly";
+                                                                                                                                                                                                                                                                                                                                                } ?>>
+                                            <div class="invalid-feedback">กรุณาระบุราคาต่อชั่วโมง</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_extra_hour_2" id="label_third_extra_hour_2">ราคาต่อชั่วโมง ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputExtrahour2"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_extra_hour_2" name="third_extra_hour_2" placeholder="" aria-describedby="inputExtrahour2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_extra_hour_2); ?>" oninput="priceformat('third_extra_hour_2');" required <?php if ($ptype != 3) {
+                                                                                                                                                                                                                                                                                                                                                    echo "readonly";
+                                                                                                                                                                                                                                                                                                                                                } ?>>
+                                            <div class="invalid-feedback">กรุณาระบุราคาต่อชั่วโมง (ราคาขาย)</div>
+                                        </div>
+                                    </div>
+                                <?php }
+                                if ($ptype == '4') { ?>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_extrabeds_1" id="label_third_extrabeds_1">ราคาเตียงเสริมผู้ใหญ่ ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputExtrabeds1"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_extrabeds_1" name="third_extrabeds_1" placeholder="" aria-describedby="inputExtrabeds1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_extrabeds_1); ?>" oninput="priceformat('third_extrabeds_1');" required <?php if ($ptype != 4) {
+                                                                                                                                                                                                                                                                                                                                                echo "readonly";
+                                                                                                                                                                                                                                                                                                                                            } ?>>
+                                            <div class="invalid-feedback">กรุณาระบุราคาเตียงเสริมผู้ใหญ่ (ทุน)</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_extrabeds_2" id="label_third_extrabeds_2">ราคาเตียงเสริมผู้ใหญ่ ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputExtrabeds2"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_extrabeds_2" name="third_extrabeds_2" placeholder="" aria-describedby="inputExtrabeds2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_extrabeds_2); ?>" oninput="priceformat('third_extrabeds_2');" required <?php if ($ptype != 4) {
+                                                                                                                                                                                                                                                                                                                                                echo "readonly";
+                                                                                                                                                                                                                                                                                                                                            } ?>>
+                                            <div class="invalid-feedback">กรุณาระบุราคาเตียงเสริมผู้ใหญ่ (ราคาขาย)</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_extrabeds_3" id="label_third_extrabeds_3">ราคาเตียงเสริมเด็ก ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputExtrabeds1"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_extrabeds_3" name="third_extrabeds_3" placeholder="" aria-describedby="inputExtrabeds1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_extrabeds_3); ?>" oninput="priceformat('third_extrabeds_3');" required <?php if ($ptype != 4) {
+                                                                                                                                                                                                                                                                                                                                                echo "readonly";
+                                                                                                                                                                                                                                                                                                                                            } ?>>
+                                            <div class="invalid-feedback">กรุณาระบุราคาเตียงเสริมเด็ก (ทุน)</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_extrabeds_4" id="label_third_extrabeds_4">ราคาเตียงเสริมเด็ก ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputExtrabeds2"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_extrabeds_4" name="third_extrabeds_4" placeholder="" aria-describedby="inputExtrabeds2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_extrabeds_4); ?>" oninput="priceformat('third_extrabeds_4');" required <?php if ($ptype != 4) {
+                                                                                                                                                                                                                                                                                                                                                echo "readonly";
+                                                                                                                                                                                                                                                                                                                                            } ?>>
+                                            <div class="invalid-feedback">กรุณาระบุราคาเตียงเสริมเด็ก (ราคาขาย)</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_sharingbed_1" id="label_third_sharingbed_1">ราคาแชร์เตียง ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputSharingbed1"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_sharingbed_1" name="third_sharingbed_1" placeholder="" aria-describedby="inputSharingbed1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_sharingbed_1); ?>" oninput="priceformat('third_sharingbed_1');" required <?php if ($ptype != 4) {
+                                                                                                                                                                                                                                                                                                                                                    echo "readonly";
+                                                                                                                                                                                                                                                                                                                                                } ?>>
+                                            <div class="invalid-feedback">กรุณาระบุราคาแชร์เตียง (ทุน)</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_sharingbed_2" id="label_third_sharingbed_2">ราคาแชร์เตียง ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputSharingbed2"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_sharingbed_2" name="third_sharingbed_2" placeholder="" aria-describedby="inputSharingbed2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_sharingbed_2); ?>" oninput="priceformat('third_sharingbed_2');" required <?php if ($ptype != 4) {
+                                                                                                                                                                                                                                                                                                                                                    echo "readonly";
+                                                                                                                                                                                                                                                                                                                                                } ?>>
+                                            <div class="invalid-feedback">กรุณาระบุราคาแชร์เตียง (ราคาขาย)</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="third_season" id="label_third_season">ราคาเสาร์-อาทิตย์, เทศกาล</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputSeason"><i class="ti-wallet"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="third_season" name="third_season" placeholder="" aria-describedby="inputSeason" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_season); ?>" oninput="priceformat('third_season');" required <?php if ($ptype != 4) {
+                                                                                                                                                                                                                                                                                                                        echo "readonly";
+                                                                                                                                                                                                                                                                                                                    } ?>>
+                                            <div class="invalid-feedback">กรุณาระบุราคาเสาร์-อาทิตย์, เทศกาล</div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
                             </div>
-                            <div class="form-row">
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_sharingbed_1">ราคาแชร์เตียง</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputSharingbed1"><i class="ti-wallet"></i></span>
-                                        </div>
-                                        <input type="text" class="form-control" id="third_sharingbed_1" name="third_sharingbed_1" placeholder="" aria-describedby="inputSharingbed1" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_sharingbed_1); ?>" oninput="priceformat('third_sharingbed_1');" required <?php if ($ptype != 4) {
-                                                                                                                                                                                                                                                                                                                                                echo "readonly";
-                                                                                                                                                                                                                                                                                                                                            } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคาแชร์เตียง</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="third_sharingbed_2">ราคาแชร์เตียง ( <span style="color:#3DB3E4; font-weight:bold">ราคาขาย</span> )</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputSharingbed2"><i class="ti-wallet"></i></span>
-                                        </div>
-                                        <input type="text" class="form-control" id="third_sharingbed_2" name="third_sharingbed_2" placeholder="" aria-describedby="inputSharingbed2" pattern="^[0-9,]+$" autocomplete="off" value="<?php echo number_format($third_sharingbed_2); ?>" oninput="priceformat('third_sharingbed_2');" required <?php if ($ptype != 4) {
-                                                                                                                                                                                                                                                                                                                                                echo "readonly";
-                                                                                                                                                                                                                                                                                                                                            } ?>>
-                                        <div class="invalid-feedback">กรุณาระบุราคาแชร์เตียง (ราคาขาย)</div>
-                                    </div>
-                                </div>
+
+                            <div class="form-row" id="div-form">
                             </div>
 
                             <!-- <hr>
@@ -461,6 +508,34 @@ $third_sharingbed_2 = !empty($row["sharingbed_2"]) ? $row["sharingbed_2"] : '0';
 <!-- ============================================================== -->
 
 <script>
+    function labelProducts() {
+        var ptype = document.getElementById('ptype');
+        var label_third_rate_1 = document.getElementById('label_third_rate_1');
+        var label_third_rate_2 = document.getElementById('label_third_rate_2');
+        var label_third_rate_3 = document.getElementById('label_third_rate_3');
+        var label_third_rate_4 = document.getElementById('label_third_rate_4');
+        if (ptype.value == 1) {
+            label_third_rate_1.innerHTML = 'ราคาผู้ใหญ่ ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )';
+            label_third_rate_2.innerHTML = 'ราคาผู้ใหญ่ ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )';
+            label_third_rate_3.innerHTML = 'ราคาเด็ก ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )';
+            label_third_rate_4.innerHTML = 'ราคาเด็ก ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )';
+        }
+        if (ptype.value == 2) {
+            label_third_rate_1.innerHTML = 'ราคาผู้ใหญ่ ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )';
+            label_third_rate_2.innerHTML = 'ราคาผู้ใหญ่ ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )';
+            label_third_rate_3.innerHTML = 'ราคาเด็ก ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )';
+            label_third_rate_4.innerHTML = 'ราคาเด็ก ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )';
+        }
+        if (ptype.value == 3) {
+            label_third_rate_1.innerHTML = 'ราคา/คัน ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )';
+            label_third_rate_2.innerHTML = 'ราคา/คัน ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )';
+        }
+        if (ptype.value == 4) {
+            label_third_rate_1.innerHTML = 'ราคา/ห้อง ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )';
+            label_third_rate_2.innerHTML = 'ราคา/ห้อง ( <span style="color:#F9A035; font-weight:bold">ราคาขาย</span> )';
+        }
+    }
+
     function checkPeriods() {
         jQuery.ajax({
             url: "../inc/ajax/supplier/checkperiods.php",

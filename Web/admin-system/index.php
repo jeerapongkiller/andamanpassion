@@ -35,6 +35,9 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
         <!-- Daterange picker plugins css -->
         <link href="../assets/node_modules/timepicker/bootstrap-timepicker.min.css" rel="stylesheet">
         <link href="../assets/node_modules/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+        <!-- Multi Select plugins css -->
+        <link href="../assets/node_modules/multiselect/css/multi-select.css" rel="stylesheet" type="text/css" />
+        <link href="../assets/node_modules/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css" />
 
         <!-- Custom CSS -->
         <link href="dist/css/style.min.css" rel="stylesheet">
@@ -150,6 +153,53 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
         <!-- Date range Plugin JavaScript -->
         <script src="../assets/node_modules/timepicker/bootstrap-timepicker.min.js"></script>
         <script src="../assets/node_modules/bootstrap-daterangepicker/daterangepicker.js"></script>
+        <!-- Multi Select Plugin JavaScript -->
+        <script src="../assets/node_modules/multiselect/js/jquery.multi-select.js"></script>
+        <script src="../assets/node_modules/select2/dist/js/select2.full.min.js" type="text/javascript"></script>
+        <script>
+            $(function() {
+                // Switchery
+                var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+                $('.js-switch').each(function() {
+                    new Switchery($(this)[0], $(this).data());
+                });
+                // For select 2
+                $(".select2").select2();
+                $(".ajax").select2({
+                    ajax: {
+                        url: "https://api.github.com/search/repositories",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function(data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    escapeMarkup: function(markup) {
+                        return markup;
+                    }, // let our custom formatter work
+                    minimumInputLength: 1,
+                    //templateResult: formatRepo, // omitted for brevity, see the source of this page
+                    //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+                });
+            });
+        </script>
 
         <script>
             // MAterial Date picker
@@ -584,7 +634,7 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 // opertor list - responsive table (Tours)
                 $('#booking-table-1').DataTable({
                     "order": [
-                        [3, 'desc']
+                        [1, 'desc']
                     ],
                     columnDefs: [{
                         targets: [0, 5, 8, 9, 10],
@@ -598,7 +648,7 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 // opertor list - responsive table (Activity)
                 $('#booking-table-2').DataTable({
                     "order": [
-                        [3, 'desc']
+                        [1, 'desc']
                     ],
                     columnDefs: [{
                         targets: [0, 5, 8, 9, 10],
@@ -612,7 +662,7 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 // opertor list - responsive table (Transfer)
                 $('#booking-table-3').DataTable({
                     "order": [
-                        [3, 'desc']
+                        [1, 'desc']
                     ],
                     columnDefs: [{
                         targets: [0, 5, 8, 9, 10],
@@ -626,7 +676,7 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 // opertor list - responsive table (Hotel)
                 $('#booking-table-4').DataTable({
                     "order": [
-                        [6, 'desc']
+                        [1, 'desc']
                     ],
                     columnDefs: [{
                         targets: [0, 7, 8],
@@ -750,17 +800,21 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     checkCompany();
                 }
                 if (str_mode.indexOf("supplier/product-third-detail") >= 0) {
+                    labelProducts();
                     checkPeriods();
                 }
                 if (str_mode.indexOf("agent/detail") >= 0) {
                     checkCompanyinvoice();
                 }
+                if (str_mode.indexOf("agent/combine-product-third-detail") >= 0) {
+                    labelProducts();
+                }
                 if (str_mode.indexOf("booking/detail") >= 0) {
-                    var str_print = "<?php echo (!empty($_GET['payment']) && $_GET['payment'] == 'print') ? 'true' : 'false' ; ?>"
+                    var str_print = "<?php echo (!empty($_GET['payment']) && $_GET['payment'] == 'print') ? 'true' : 'false'; ?>"
                     checkCustomertype();
                     checkVoucher();
                     checkCancel();
-                    if(str_print == 'true'){
+                    if (str_print == 'true') {
                         printPayment();
                     }
                 }
@@ -817,7 +871,7 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 })
             });
 
-            function openQuestion(page){
+            function openQuestion(page) {
                 jQuery.ajax({
                     url: "../inc/ajax/question/page.php",
                     data: {
