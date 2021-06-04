@@ -238,7 +238,7 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                 <div class="col-md-3 mb-3">
                                     <label for="bp_pickup">สถานที่รับ <a href="#pickup" onclick="add_place('pickup', 'add_place')"><i class="fas fa-plus" style="color:#0FFF00"></i></a> </label>
                                     <div class="input-group" id="select_pickup">
-                                        <select class="select2 form-control custom-select" id="bp_pickup" name="bp_pickup" onchange="checkdropoff('chang', 'checkdropoff');">
+                                        <select class="form-control custom-select" id="bp_pickup" name="bp_pickup" onchange="checkdropoff('chang', 'checkdropoff');">
                                             <option value="0" id="zero_dropoff">กรุณาเลือกสถานที่รับ</option>
                                             <?php
                                             $query_pickup = "SELECT * FROM place WHERE status = '1' AND pickup = '1' ";
@@ -258,7 +258,7 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                 <div class="col-md-3 mb-3">
                                     <label for="bp_dropoff">สถานที่ส่ง <a href="#dropoff" onclick="add_place('dropoff', 'add_place')"><i class="fas fa-plus" style="color:#0FFF00"></i></a> </label>
                                     <div class="input-group" id="select_dropoff">
-                                        <select class="select2 form-control custom-select" id="bp_dropoff" name="bp_dropoff">
+                                        <select class="form-control custom-select" id="bp_dropoff" name="bp_dropoff">
                                             <option value="0" id="zero_dropoff">กรุณาเลือกสถานที่ส่ง</option>
                                             <?php
                                             $query_dropoff = "SELECT * FROM place WHERE status = '1' AND dropoff = '1' ";
