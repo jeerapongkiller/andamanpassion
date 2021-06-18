@@ -77,6 +77,10 @@ if (!empty($_POST["travel_date"])) {
     $result = mysqli_stmt_get_result($procedural_statement);
     $numrow = mysqli_num_rows($result);
     while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+        # --- Pickup & Dropoff --- #
+        $pickup_name = $row["pickup"] > '0' ? get_value('place', 'id', 'name', $row["pickup"], $mysqli_p) : "N/A";
+        $zones_pickup_id = $row["pickup"] > '0' ? get_value('place', 'id', 'zones', $row["pickup"], $mysqli_p) : '0';
+        $zones_pickup_name = $zones_pickup_id > '0' ? get_value('zones', 'id', 'name', $zones_pickup_id, $mysqli_p) : "N/A";
         #---- Head ----#
         if ($first != $row["pcsID"] || $second != $row["dropoff"]) {
             #---- Foot ----#
@@ -127,9 +131,9 @@ if (!empty($_POST["travel_date"])) {
                         <td width="52" style="text-align: center; border:1px solid #cdcdcd; font-size:16px; padding:5px 5px;"> ' . $row["foc"] . ' </td>
                         <td width="47" style="text-align: center; border:1px solid #cdcdcd; font-size:16px; padding:5px 5px;"> ' . $row["vans"] . ' </td>
                         <td width="57" style="text-align: center; border:1px solid #cdcdcd; font-size:16px; padding:5px 5px;"> ' . $row["dropoff_time"] . ' </td>
-                        <td width="85" style="text-align: center; border:1px solid #cdcdcd; font-size:16px; padding:5px 5px;"> ' . get_value('place', 'id', 'name', $row["pickup"], $mysqli_p) . ' </td>
+                        <td width="85" style="text-align: center; border:1px solid #cdcdcd; font-size:16px; padding:5px 5px;"> ' . $pickup_name . ' </td>
                         <td width="84" style="text-align: center; border:1px solid #cdcdcd; font-size:16px; padding:5px 5px;"> ' . $row["roomno"] . ' </td>
-                        <td width="82" style="text-align: center; border:1px solid #cdcdcd; font-size:16px; padding:5px 5px;"> ' . get_value('zones', 'id', 'name', $row["zones"], $mysqli_p) . ' </td>
+                        <td width="82" style="text-align: center; border:1px solid #cdcdcd; font-size:16px; padding:5px 5px;"> ' . $zones_pickup_name . ' </td>
                         <td width="140" style="text-align: center; border:1px solid #cdcdcd; font-size:16px; padding:5px 5px;">  </td>
                     </tr>
                 </table>

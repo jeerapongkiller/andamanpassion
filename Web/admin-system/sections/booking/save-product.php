@@ -57,10 +57,13 @@ $bp_pickup_time = !empty($_POST["bp_pickup_time"]) ? $_POST["bp_pickup_time"] : 
 $bp_dropoff_time = !empty($_POST["bp_dropoff_time"]) ? $_POST["bp_dropoff_time"] : $times;
 $bp_no_rooms = !empty($_POST["bp_no_rooms"]) ? $_POST["bp_no_rooms"] : '0';
 $bp_notes = !empty($_POST["bp_notes"]) ? $_POST["bp_notes"] : '';
-$bp_extra_beds = !empty($_POST["bp_extra_beds"]) ? $_POST["bp_extra_beds"] : '0';
+$bp_season_no = !empty($_POST["bp_season_no"]) ? $_POST["bp_season_no"] : '0';
+$bp_extra_beds_adult = !empty($_POST["bp_extra_beds_adult"]) ? $_POST["bp_extra_beds_adult"] : '0';
+$bp_extra_beds_child = !empty($_POST["bp_extra_beds_child"]) ? $_POST["bp_extra_beds_child"] : '0';
 $bp_share_bed = !empty($_POST["bp_share_bed"]) ? $_POST["bp_share_bed"] : '0';
 $bp_foreigner = !empty($_POST["bp_foreigner"]) ? $_POST["bp_foreigner"] : '2';
 $bp_foreigner_no = !empty($_POST["bp_foreigner_no"]) ? $_POST["bp_foreigner_no"] : '0';
+$bp_season = !empty($_POST["bp_season"]) ? $_POST["bp_season"] : '0';
 $bp_foreigner_price = !empty($_POST["bp_foreigner_price"]) ? preg_replace('(,)', '', $_POST["bp_foreigner_price"]) : '0';
 $bp_price_default = !empty($_POST["bp_price_default"]) ? preg_replace('(,)', '', $_POST["bp_price_default"]) : '0';
 $bp_price_latest = !empty($_POST["bp_price_latest"]) ? preg_replace('(,)', '', $_POST["bp_price_latest"]) : '0';
@@ -74,6 +77,7 @@ $bp_group_2 = !empty($_POST["bp_group_2"]) ? $_POST["bp_group_2"] : '0';
 $bp_transfer_2 = !empty($_POST["bp_transfer_2"]) ? $_POST["bp_transfer_2"] : '0';
 $bp_extra_hour_2 = !empty($_POST["bp_extra_hour_2"]) ? $_POST["bp_extra_hour_2"] : '0';
 $bp_extrabeds_2 = !empty($_POST["bp_extrabeds_2"]) ? $_POST["bp_extrabeds_2"] : '0';
+$bp_extrabeds_4 = !empty($_POST["bp_extrabeds_4"]) ? $_POST["bp_extrabeds_4"] : '0';
 $bp_sharingbed_2 = !empty($_POST["bp_sharingbed_2"]) ? $_POST["bp_sharingbed_2"] : '0';
 $bp_pax = !empty($_POST["bp_pax"]) ? $_POST["bp_pax"] : '0';
 $bp_hours_no = !empty($_POST["bp_hours_no"]) ? $_POST["bp_hours_no"] : '0';
@@ -117,11 +121,12 @@ if ($bp_id > 0) {
 if (!empty($catefirst) && !empty($catesecond) && !empty($catethird) && $ptype > 0 && $message_alert != "error-same") {
     if (empty($bp_id)) {
         # ---- Insert to database ---- #
-        $query = "INSERT INTO booking_products (products_type, booking, date_not_specified, travel_date, checkin_date, checkout_date, products_category_first, products_category_second, products_category_third, products_category_third_combine, adults, children, infant, foc, transfer, no_cars, no_hours, no_rooms, extra_beds, share_bed, pickup, pickup_time, dropoff, dropoff_time, vans, zones, roomno, foreigner, foreigner_no, foreigner_price, rate_2, rate_4, charter_2, group_2, transfer_2, extra_hour_2, extrabeds_2, sharingbed_2, price_default, price_latest, pax, hours_no, notes, payments_invoice, status_email, status_confirm, status_confirm_by, status_confirm_op, invoice, trash_deleted, create_date, last_edit_time)";
-        $query .= "VALUES (0, 0, 0, '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 0, 0, '', 0, 0, 0, now(), now())";
+        $query = "INSERT INTO booking_products (products_type, booking, date_not_specified, travel_date, checkin_date, checkout_date, products_category_first, products_category_second, products_category_third, products_category_third_combine, adults, children, infant, foc, transfer, no_cars, no_hours, no_rooms, season_no, extra_beds_adult, extra_beds_child, share_bed, pickup, pickup_time, dropoff, dropoff_time, vans, zones, roomno, foreigner, foreigner_no, foreigner_price, rate_2, rate_4, charter_2, group_2, transfer_2, extra_hour_2, extrabeds_2, sharingbed_2, season, price_default, price_latest, pax, hours_no, notes, payments_invoice, status_email, status_confirm, status_confirm_by, status_confirm_op, invoice, trash_deleted, create_date, last_edit_time)";
+        $query .= "VALUES (0, 0, 0, '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 0, 0, '', 0, 0, 0, now(), now())";
         $result = mysqli_query($mysqli_p, $query);
         $bp_id = mysqli_insert_id($mysqli_p);
 
+        echo $query;
         # --- booking confirm and email ---#
         $num_status = '2';
         $query = "UPDATE booking SET status_confirm = ? , status_email = ? WHERE id = ?";
@@ -350,9 +355,17 @@ if (!empty($catefirst) && !empty($catesecond) && !empty($catethird) && $ptype > 
         $bind_types .= "i";
         array_push($params, $bp_no_rooms);
 
-        $query .= " extra_beds = ?,";
+        $query .= " season_no = ?,";
         $bind_types .= "i";
-        array_push($params, $bp_extra_beds);
+        array_push($params, $bp_season_no);
+
+        $query .= " extra_beds_adult = ?,";
+        $bind_types .= "i";
+        array_push($params, $bp_extra_beds_adult);
+
+        $query .= " extra_beds_child = ?,";
+        $bind_types .= "i";
+        array_push($params, $bp_extra_beds_child);
 
         $query .= " share_bed = ?,";
         $bind_types .= "i";
@@ -430,9 +443,17 @@ if (!empty($catefirst) && !empty($catesecond) && !empty($catethird) && $ptype > 
         $bind_types .= "d";
         array_push($params, $bp_extrabeds_2);
 
+        $query .= " extrabeds_4 = ?,";
+        $bind_types .= "d";
+        array_push($params, $bp_extrabeds_4);
+
         $query .= " sharingbed_2 = ?,";
         $bind_types .= "d";
         array_push($params, $bp_sharingbed_2);
+
+        $query .= " season = ?,";
+        $bind_types .= "d";
+        array_push($params, $bp_season);
 
         $query .= " price_default = ?,";
         $bind_types .= "d";

@@ -111,6 +111,10 @@
 
                     <?php
                     while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                        # --- Pickup & Dropoff --- #
+                        $pickup_name = $row["pickup"] > '0' ? get_value('place', 'id', 'name', $row["pickup"], $mysqli_p) : "N/A";
+                        $zones_pickup_id = $row["pickup"] > '0' ? get_value('place', 'id', 'zones', $row["pickup"], $mysqli_p) : '0';
+                        $zones_pickup_name = $zones_pickup_id > '0' ? get_value('zones', 'id', 'name', $zones_pickup_id, $mysqli_p) : "N/A";
                         #---- Head ----#
                         if ($first != $row["pcsID"] || $second != $row["dropoff"]) {
                             #---- Foot ----#
@@ -154,9 +158,9 @@
                                                     <td> <?php echo $row["foc"]; ?> </td>
                                                     <td> <?php echo $row["vans"]; ?> </td>
                                                     <td> <?php echo $row["dropoff_time"]; ?> </td>
-                                                    <td> <?php echo get_value('place', 'id', 'name', $row["pickup"], $mysqli_p); ?> </td>
+                                                    <td> <?php echo $pickup_name; ?> </td>
                                                     <td> <?php echo $row["roomno"]; ?> </td>
-                                                    <td> <?php echo get_value('zones', 'id', 'name', $row["zones"], $mysqli_p); ?> </td>
+                                                    <td> <?php echo $zones_pickup_name; ?> </td>
                                                     <td> <?php echo ''; ?> </td>
                                                 </tr>
                                             <?php $numrow_realtime++;

@@ -784,7 +784,7 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                             <tr align="center">
                                                 <th>สถานะ</th>
                                                 <th>เลขใบเสร็จ</th>
-                                                <th>สินค้า (วันที่เที่ยว)</th>
+                                                <th>ประเภทการจ่ายเงิน</th>
                                                 <th>วันที่ชำระ</th>
                                                 <th>จำนวนเงิน</th>
                                                 <th>แก้ไข / ดู</th>
@@ -815,13 +815,14 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                                                 $status_class = $row_pb["status"] == 1 ? 'success' : 'danger';
                                                 $status_txt = $row_pb["status"] == 1 ? 'ออนไลน์' : 'ยกเลิก';
                                                 $date_travel = $row_pb["bpType"] == 4 ? $row_pb["bpCheckin_date"] : $row_pb["bpTravel_date"];
-                                                $name_payment = $row_pb["booking_products"] == 0 ? 'ชำระทั้งหมด' : $row_pb['pcsName'] . '<br />(' . date("d F Y", strtotime($date_travel)) . ')';
+                                                // $name_payment = $row_pb["booking_products"] == 0 ? 'ชำระทั้งหมด' : $row_pb['pcsName'] . '<br />(' . date("d F Y", strtotime($date_travel)) . ')';
                                                 $sum_paid = $row_pb["status"] == 1 ? $sum_paid + $row_pb['amount_paid'] : $sum_paid;
+                                                $accounts = !empty($row_pb["accounts"]) ? get_value('accounts', 'id', 'name', $row_pb["accounts"], $mysqli_p) : '';
                                             ?>
                                                 <tr>
                                                     <td align="center"> <span class="label label-<?php echo $status_class; ?>"><?php echo $status_txt; ?></span> </td>
                                                     <td align="center" style="font-weight: bold"> <?php echo $row_pb['receip_no']; ?> </td>
-                                                    <td align="center"> <?php echo $name_payment; ?> </td>
+                                                    <td align="center"> <?php echo $accounts; ?> </td>
                                                     <td align="center"> <?php echo $row_pb['date_paid']; ?> </td>
                                                     <td align="center"> <?php echo number_format($row_pb['amount_paid']); ?> </td>
                                                     <td align="center" width="7%">
@@ -952,6 +953,59 @@ $bo_balance = !empty($bo_balance) ? number_format($bo_balance) : '-';
                     <div id="test-mail"></div>
 
                     <div id="test-delete-email"></div>
+
+                    <table width="700" border="0" cellspacing="0" cellpadding="1" align="center" style="margin-bottom:15px;">
+                        <tr>
+                            <td height="100" width="50%" valign="top" align="left">
+                                <img src="https://ams.andamanpassion.com/assets/images/logo/andaman-passion.png" alt="Andaman Passion" title="Andaman Passion" width="120" border="0" />
+                            </td>
+                            <td height="100" width="50%" valign="top" align="right">
+                                <span style="font-size:12px; padding:5px 5px;"> Your booking number is: </span> <br />
+                                <span style="font-size:28px; padding:5px 5px;"> 0000001 </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="10%" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Name : </td>
+                            <td width="10%" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Name : </td>
+                        </tr>
+                        <tr>
+                            <td width="10%" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Email : </td>
+                            <td width="10%" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Email : </td>
+                        </tr>
+                        <tr>
+                            <td width="10%" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Telephone : </td>
+                            <td width="10%" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Telephone : </td>
+                        </tr>
+                    </table>
+
+                    <table width="700" border="0" cellspacing="0" cellpadding="1" align="center" style="margin-bottom:15px;">
+                        <tr>
+                            <td width="10%" colspan="2" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Tour Name : </td>
+                            <td width="10%" colspan="2" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Tour Name : </td>
+                        </tr>
+                        <tr>
+                            <td width="10%" colspan="2" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Travel Date : </td>
+                            <td width="10%" colspan="2" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Travel Date : </td>
+                        </tr>
+                        <tr>
+                            <td width="10%" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Number of Adults : </td>
+                            <td width="10%" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> 10 </td>
+                            <td width="10%" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Number of Children : </td>
+                            <td width="10%" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> 10 </td>
+                        </tr>
+                        <tr>
+                            <td width="10%" colspan="2" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Pick up location : </td>
+                            <td width="10%" colspan="2" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Pick up location : </td>
+                        </tr>
+                        <tr>
+                            <td width="10%" colspan="2" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Drop off location : </td>
+                            <td width="10%" colspan="2" style="border:1px solid #cdcdcd; font-size:12px; padding:5px 5px;"> Drop off location : </td>
+                        </tr>
+                    </table>
+                    
+                    <p>
+                        <b>Terms and Conditions:</b>
+                    </p>
 
                 <?php
                 $price_paid = '0';

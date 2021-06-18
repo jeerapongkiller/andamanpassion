@@ -224,8 +224,8 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                             </div>
 
                             <hr>
-
-                            <div class="form-row">
+                            
+                            <div class="form-row" id="div-row-transfer">
                                 <div class="col-md-2 mb-3" id="div-transfer">
                                     <label for="bp_transfer"> เพิ่มรถรับส่ง </label>
                                     <!--- (<span style="color:#FF0000">เฉพาะทัวร์และกิจกรรมเท่านั้น</span>) --->
@@ -234,9 +234,10 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                         <label class="custom-control-label" for="bp_transfer">ใช่</label>
                                     </div>
                                 </div>
-
                                 <div class="col-md-3 mb-3">
-                                    <label for="bp_pickup">สถานที่รับ <a href="#pickup" onclick="add_place('pickup', 'add_place')"><i class="fas fa-plus" style="color:#0FFF00"></i></a> </label>
+                                    <label for="bp_pickup">สถานที่รับ 
+                                        <!-- <a href="#pickup" onclick="add_place('pickup', 'add_place')"><i class="fas fa-plus" style="color:#0FFF00"></i></a>  -->
+                                    </label>
                                     <div class="input-group" id="select_pickup">
                                         <select class="form-control custom-select" id="bp_pickup" name="bp_pickup" onchange="checkdropoff('chang', 'checkdropoff');">
                                             <option value="0" id="zero_dropoff">กรุณาเลือกสถานที่รับ</option>
@@ -256,9 +257,11 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="bp_dropoff">สถานที่ส่ง <a href="#dropoff" onclick="add_place('dropoff', 'add_place')"><i class="fas fa-plus" style="color:#0FFF00"></i></a> </label>
+                                    <label for="bp_dropoff">สถานที่ส่ง 
+                                        <!-- <a href="#dropoff" onclick="add_place('dropoff', 'add_place')"><i class="fas fa-plus" style="color:#0FFF00"></i></a>  -->
+                                    </label>
                                     <div class="input-group" id="select_dropoff">
-                                        <select class="form-control custom-select" id="bp_dropoff" name="bp_dropoff">
+                                        <select class="form-control custom-select" id="bp_dropoff" name="bp_dropoff" onchange="checkZonesDropoff()">
                                             <option value="0" id="zero_dropoff">กรุณาเลือกสถานที่ส่ง</option>
                                             <?php
                                             $query_dropoff = "SELECT * FROM place WHERE status = '1' AND dropoff = '1' ";
@@ -275,8 +278,7 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                         </select>
                                     </div>
                                 </div>
-
-                                <div class="col-md-2 mb-3">
+                                <!-- <div class="col-md-2 mb-3">
                                     <label for="bp_zones">โซน</label>
                                     <select class="custom-select" id="bp_zones" name="bp_zones">
                                         <option value="0">กรุณาเลือกโซน</option>
@@ -293,6 +295,10 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
                                         }
                                         ?>
                                     </select>
+                                </div> -->
+                                <div class="col-md-2 mb-3" style="text-align:center" id="bp_zones_pickup">
+                                </div>
+                                <div class="col-md-2 mb-3" style="text-align:center" id="bp_zones_dropoff">
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label for="bp_roomno">ห้องพัก</label>
@@ -566,6 +572,38 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
             type: "POST",
             success: function(response) {
                 $("#select_dropoff").html(response);
+                checkZonesPickup();
+                checkZonesDropoff();
+            }
+        });
+    }
+
+    function checkZonesPickup() {
+        var pickup = document.getElementById('bp_pickup').value;
+        jQuery.ajax({
+            url: "../inc/ajax/booking/checkzones.php",
+            data: {
+                type: 'pickup',
+                pickup: pickup
+            },
+            type: "POST",
+            success: function(response) {
+                $("#bp_zones_pickup").html(response);
+            }
+        });
+    }
+
+    function checkZonesDropoff() {
+        var dropoff = document.getElementById('bp_dropoff').value;
+        jQuery.ajax({
+            url: "../inc/ajax/booking/checkzones.php",
+            data: {
+                type: 'dropoff',
+                dropoff: dropoff
+            },
+            type: "POST",
+            success: function(response) {
+                $("#bp_zones_dropoff").html(response);
             }
         });
     }
@@ -775,7 +813,7 @@ $bp_status_confirm_op = !empty($row["status_confirm_op"]) ? $row["status_confirm
             document.getElementById('div-travel-date').style.display = "none"
             document.getElementById('type-tour-activity').style.display = "none"
             document.getElementById('div-type-transfer').style.display = "none"
-            document.getElementById('div-transfer').style.display = "none"
+            document.getElementById('div-row-transfer').style.display = "none"
         }
     }
 </script>

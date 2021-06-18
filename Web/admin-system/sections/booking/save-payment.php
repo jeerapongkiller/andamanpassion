@@ -5,8 +5,9 @@ $pm_booking = !empty($_POST["pm_booking"]) ? $_POST["pm_booking"] : '';
 $pm_status = !empty($_POST["pm_status"]) ? $_POST["pm_status"] : '1';
 $pm_receip_no = !empty($_POST["pm_receip_no"]) ? $_POST["pm_receip_no"] : '';
 $pm_date_paid = !empty($_POST["pm_date_paid"]) ? $_POST["pm_date_paid"] : $today;
+$pm_time_paid = !empty($_POST["pm_time_paid"]) ? $_POST["pm_time_paid"] : date("H:i");
 $pm_accounts = !empty($_POST["pm_accounts"]) ? $_POST["pm_accounts"] : '';
-$pm_booking_products = !empty($_POST["pm_booking_products"]) ? $_POST["pm_booking_products"] : '';
+// $pm_booking_products = !empty($_POST["pm_booking_products"]) ? $_POST["pm_booking_products"] : '';
 $pm_amount_paid = !empty($_POST["pm_amount_paid"]) ? preg_replace('(,)', '', $_POST["pm_amount_paid"]) : 0;
 $pm_receiver_name = !empty($_POST["pm_receiver_name"]) ? $_POST["pm_receiver_name"] : '';
 
@@ -16,8 +17,8 @@ $message_alert = "error";
 if (!empty($pm_booking)) {
     if (empty($pm_id)) {
         # ---- Insert to database ---- #
-        $query = "INSERT INTO payments_booking (status, booking, booking_products, accounts, bank, date_paid, receip_no, amount_paid, receiver_name, bank_name, bank_no, photo1, trash_deleted, last_edit_time)";
-        $query .= "VALUES (1, 0, 0, 0, 0, '', '', 0, '', '', '', '', 2, now())";
+        $query = "INSERT INTO payments_booking (status, booking, booking_products, accounts, bank, date_paid, time_paid, receip_no, amount_paid, receiver_name, bank_name, bank_no, photo1, trash_deleted, last_edit_time)";
+        $query .= "VALUES (1, 0, 0, 0, 0, '', '', '', 0, '', '', '', '', 2, now())";
         $result = mysqli_query($mysqli_p, $query);
         $pm_id = mysqli_insert_id($mysqli_p);
     }
@@ -65,9 +66,9 @@ if (!empty($pm_booking)) {
         $bind_types .= "i";
         array_push($params, $pm_booking);
 
-        $query .= " booking_products = ?,";
-        $bind_types .= "i";
-        array_push($params, $pm_booking_products);
+        // $query .= " booking_products = ?,";
+        // $bind_types .= "i";
+        // array_push($params, $pm_booking_products);
 
         $query .= " accounts = ?,";
         $bind_types .= "s";
@@ -76,6 +77,10 @@ if (!empty($pm_booking)) {
         $query .= " date_paid = ?,";
         $bind_types .= "s";
         array_push($params, $pm_date_paid);
+
+        $query .= " time_paid = ?,";
+        $bind_types .= "s";
+        array_push($params, $pm_time_paid);
 
         $query .= " receip_no = ?,";
         $bind_types .= "s";

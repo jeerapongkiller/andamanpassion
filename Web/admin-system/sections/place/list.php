@@ -171,6 +171,7 @@
                                                 <th>สถานะ</th>
                                                 <th>สถานที่</th>
                                                 <!-- <th>ประเภท</th> -->
+                                                <th>โซน</th>
                                                 <th>แก้ไข</th>
                                                 <th>ลบ</th>
                                                 <?php if ($_SESSION["admin"]["permission"] == 1) {
@@ -220,6 +221,7 @@
                                                     <td align="center"><span class="label label-<?php echo $status_class; ?>"><?php echo $status_txt; ?></span></td>
                                                     <td><?php echo $row["name"]; ?></td>
                                                     <!-- <td align="center"> <?php // echo $place; ?> </td> -->
+                                                    <td><?php echo (!empty($row["zones"])) ? get_value('zones', 'id', 'name', $row["zones"], $mysqli_p) : '-' ; ?></td>
                                                     <td align="center"><a href="./?mode=place/detail&id=<?php echo $row["id"]; ?>"><i class="fas fa-edit"></i></a></td>
                                                     <td align="center"><a href="#deleted" onclick="deleteList(<?php echo $row['id']; ?>);"><i class="fas fa-trash-alt" style="color:#FF0000"></i></a></td>
                                                     <?php if ($_SESSION["admin"]["permission"] == 1) { ?>

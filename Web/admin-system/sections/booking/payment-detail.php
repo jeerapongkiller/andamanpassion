@@ -10,7 +10,7 @@ if (!empty($_GET["id"])) {
     $numrow = mysqli_num_rows($result);
     if ($numrow > 0) {
         $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-        $page_title = 'เลขที่ใบเสร็จ # '.$row['receip_no'];
+        $page_title = 'เลขที่ใบเสร็จ # ' . $row['receip_no'];
     } else {
         echo "<meta http-equiv=\"refresh\" content=\"0; url = './?mode=booking/detail&id='" . $_GET["booking"] . "'\" >";
     }
@@ -24,6 +24,7 @@ $pm_booking_products = !empty($row["booking_products"]) ? $row["booking_products
 $pm_accounts = !empty($row["accounts"]) ? $row["accounts"] : '0';
 $pm_bank = !empty($row["bank"]) ? $row["bank"] : '0';
 $pm_date_paid = !empty($row["date_paid"]) ? $row["date_paid"] : $today;
+$pm_time_paid = !empty($row["time_paid"]) ? $row["time_paid"] : '';
 $pm_receip_no = !empty($row["receip_no"]) ? $row["receip_no"] : '';
 $pm_amount_paid = !empty($row["amount_paid"]) ? $row["amount_paid"] : '';
 $pm_receiver_name = !empty($row["receiver_name"]) ? $row["receiver_name"] : '';
@@ -80,9 +81,9 @@ $pm_balance = !empty($_POST["pm_balance"]) ? $_POST["pm_balance"] : '0';
                             <input type="hidden" id="pm_id" name="pm_id" value="<?php echo $pm_id; ?>">
                             <input type="hidden" id="page_title" name="page_title" value="<?php echo $page_title; ?>">
                             <input type="hidden" id="pm_booking" name="pm_booking" value="<?php echo $pm_booking; ?>">
-                            <input type="hidden" id="pm_total" name="pm_total" value="<?php echo $pm_total; ?>" >
-                            <input type="hidden" id="pm_paid" name="pm_paid" value="<?php echo $pm_paid; ?>" >
-                            <input type="hidden" id="pm_balance" name="pm_balance" value="<?php echo $pm_balance; ?>" >
+                            <input type="hidden" id="pm_total" name="pm_total" value="<?php echo $pm_total; ?>">
+                            <input type="hidden" id="pm_paid" name="pm_paid" value="<?php echo $pm_paid; ?>">
+                            <input type="hidden" id="pm_balance" name="pm_balance" value="<?php echo $pm_balance; ?>">
                             <div class="form-row">
                                 <div class="col-md-4 mb-3">
                                     <label for="pm_status">สถานะ</label>
@@ -119,8 +120,16 @@ $pm_balance = !empty($_POST["pm_balance"]) ? $_POST["pm_balance"] : '0';
                                         <div class="invalid-feedback" id="pm_date_paid_feedback"> กรุณาระบุวันที่ชำระเงิน </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="pm_time_paid"> เวลาชำระเงิน </label>
+                                    <div class="input-group clockpicker" data-placement="bottom" data-align="top" data-autoclose="true" onchange="checkHours()">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputPaidtime"><i class="ti-timer"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" id="pm_time_paid" name="pm_time_paid" placeholder="" aria-describedby="inputPickuptime" value="<?php echo (!empty($pm_time_paid)) ? date('H:i', strtotime($pm_time_paid)) : date("H:i"); ?>" readonly>
+                                        <div class="invalid-feedback">กรุณาระบุเวลารับ</div>
+                                    </div>
+                                </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="pm_accounts"> ประเภทการจ่ายเงิน </label>
                                     <div class="input-group">
@@ -148,7 +157,7 @@ $pm_balance = !empty($_POST["pm_balance"]) ? $_POST["pm_balance"] : '0';
                                         <div class="invalid-feedback" id="pm_accounts_feedback"> กรุณาเลือกประเภทการจ่ายเงิน </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <!-- <div class="col-md-4 mb-3">
                                     <label for="pm_booking_products"> สินค้า </label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
@@ -183,7 +192,7 @@ $pm_balance = !empty($_POST["pm_balance"]) ? $_POST["pm_balance"] : '0';
                                         <div class="invalid-feedback" id="pm_booking_products_feedback"> กรุณาเลือกสินค้า </div>
                                     </div>
                                 </div>
-                                <!-- <div class="col-md-4 mb-3 text-center">
+                                <div class="col-md-4 mb-3 text-center">
                                     <label for="paid_no"> จำนวนเงิน </label></br>
                                     <span style="font-size:16px; font-weight:bold; color:#BD1A2A;" id="paid_no"> กรุณาเลือกสินค้า </span>
                                 </div> -->
@@ -308,7 +317,7 @@ $pm_balance = !empty($_POST["pm_balance"]) ? $_POST["pm_balance"] : '0';
         }
         if (inputfield == 'pm_amount_paid') {
             var pm_amount_paid = document.getElementById(inputfield)
-            if(d > pm_balance.value) {
+            if (d > pm_balance.value) {
                 pm_amount_paid.value = pm_balance.value
             }
         }
@@ -326,7 +335,7 @@ $pm_balance = !empty($_POST["pm_balance"]) ? $_POST["pm_balance"] : '0';
             var validation = Array.prototype.filter.call(forms, function(form) {
                 form.addEventListener('submit', function(event) {
                     if (form.checkValidity() === false || pm_amount_paid === 0) {
-                        if(pm_amount_paid === 0){
+                        if (pm_amount_paid === 0) {
                             pm_amount_paid_feedback.html('กรุณาระบุจำนวนเงินที่ต้องชำระ')
                         }
                         event.preventDefault();

@@ -21,6 +21,7 @@ if (!empty($_GET["id"])) {
 $dp_id = !empty($row["id"]) ? $row["id"] : '0';
 $dp_status = !empty($row["status"]) ? $row["status"] : '2';
 $dp_name = !empty($row["name"]) ? $row["name"] : '';
+$bp_zones = !empty($row["zones"]) ? $row["zones"] : '0';
 // $dp_pickup = !empty($row["pickup"]) ? $row["pickup"] : '2';
 // $dp_dropoff = !empty($row["dropoff"]) ? $row["dropoff"] : '2';
 ?>
@@ -84,13 +85,15 @@ $dp_name = !empty($row["name"]) ? $row["name"] : '';
                                         <div class="controls">
                                             <fieldset>
                                                 <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" value="1" name="dp_pickup" id="dp_pickup" class="custom-control-input" <?php // echo $dp_pickup == '1' ? 'checked' : '' ; ?>>
+                                                    <input type="checkbox" value="1" name="dp_pickup" id="dp_pickup" class="custom-control-input" <?php // echo $dp_pickup == '1' ? 'checked' : '' ; 
+                                                                                                                                                    ?>>
                                                     <label class="custom-control-label" for="dp_pickup">รับ</label>
                                                 </div>
                                             </fieldset>
                                             <fieldset>
                                                 <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" value="1" name="dp_dropoff" id="dp_dropoff" class="custom-control-input" <?php // echo $dp_dropoff == '1' ? 'checked' : '' ; ?>>
+                                                    <input type="checkbox" value="1" name="dp_dropoff" id="dp_dropoff" class="custom-control-input" <?php // echo $dp_dropoff == '1' ? 'checked' : '' ; 
+                                                                                                                                                    ?>>
                                                     <label class="custom-control-label" for="dp_dropoff">ส่ง</label>
                                                 </div>
                                             </fieldset>
@@ -107,8 +110,27 @@ $dp_name = !empty($row["name"]) ? $row["name"] : '';
                                             <span class="input-group-text" id="inputCompany"><i class="ti-flag"></i></span>
                                         </div>
                                         <input type="text" class="form-control" id="dp_name" name="dp_name" placeholder="" aria-describedby="inputCompany" autocomplete="off" value="<?php echo htmlspecialchars($dp_name); ?>" required>
-                                        <div class="invalid-feedback" id="dp_name_feedback"></div>
+                                        <div class="invalid-feedback" id="dp_name_feedback">กรุณาระบุสถานที่ส่ง</div>
                                     </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="bp_zones">โซน</label>
+                                    <select class="custom-select" id="bp_zones" name="bp_zones" required>
+                                        <option value="">กรุณาเลือกโซน</option>
+                                        <?php
+                                        $query_zones = "SELECT * FROM zones";
+                                        $query_zones .= " ORDER BY name ASC";
+                                        $procedural_statement = mysqli_prepare($mysqli_p, $query_zones);
+                                        mysqli_stmt_execute($procedural_statement);
+                                        $result_zones = mysqli_stmt_get_result($procedural_statement);
+                                        while ($row_zones = mysqli_fetch_array($result_zones, MYSQLI_ASSOC)) {
+                                        ?>
+                                            <option value="<?php echo $row_zones["id"]; ?>" <?php echo ($row_zones["id"] == $bp_zones) ? 'selected' : ''; ?>><?php echo $row_zones["name"]; ?></option>
+                                        <?php
+                                        }
+                                        ?>
+                                    </select>
+                                    <div class="invalid-feedback" id="dp_place_feedback">กรุณาระบุโซน</div>
                                 </div>
                             </div>
 
@@ -131,17 +153,6 @@ $dp_name = !empty($row["name"]) ? $row["name"] : '';
                                             var dp_dropoff = document.getElementById('dp_dropoff');
 
                                             if (form.checkValidity() === false) {
-
-                                                // if(dp_pickup.checked == false && dp_dropoff.checked == false){
-                                                //     dp_pickup.required = true;
-                                                //     dp_dropoff.required = true;
-                                                // }else{
-                                                //     dp_pickup.required = false;
-                                                //     dp_dropoff.required = false;
-                                                // }
-
-                                                $("#dp_name").next("div.invalid-feedback").text("กรุณาระบุสถานที่ส่ง");
-
                                                 event.preventDefault();
                                                 event.stopPropagation();
                                             }

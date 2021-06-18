@@ -210,7 +210,7 @@
 
                     <?php
                     # check value from search 
-                    $next7day = date('Y-m-d',strtotime($today . "+1 day"));
+                    $next7day = date('Y-m-d', strtotime($today . "+1 day"));
                     $search_voucher_no_val = !empty($_POST["search_voucher_no"]) ? $_POST["search_voucher_no"] : '';
                     $search_customer_firstname_val = !empty($_POST["search_customer_firstname"]) ? $_POST["search_customer_firstname"] : '';
                     $search_customer_lastname_val = !empty($_POST["search_customer_lastname"]) ? $_POST["search_customer_lastname"] : '';
@@ -321,7 +321,7 @@
                                                         products_type.name_text_thai as ptypenamethai, products_category_second.id as pcsid, products_category_second.name as pcsname, 
                                                         booking_status_email.name_thai as emailthai, booking_status_confirm.name_thai as confirmthai, booking.id as bid, booking.voucher_no as bvoucher,
                                                         booking.agent as bagent, booking.agent_voucher as bagentv, booking.customer_firstname as bcfname, booking.customer_lastname as bclname, 
-                                                        booking.customer_mobile as bcmb, place.id as place_id, place.name as place_name, place.dropoff as place_dropoff, place.pickup as place_pickup 
+                                                        booking.customer_mobile as bcmb, booking.receipt_detail as bo_detail, place.id as place_id, place.name as place_name, place.dropoff as place_dropoff, place.pickup as place_pickup 
                                                     FROM booking_products
                                                     LEFT JOIN booking
                                                         ON booking_products.booking = booking.id
@@ -479,9 +479,11 @@
                                                             <th style="vertical-align:middle">หมายเลขรถ/</br>ป้ายทะเบียน</th>
                                                             <th style="vertical-align:middle">เวลารับ</th>
                                                             <th style="vertical-align:middle">สถานที่รับ</th>
-                                                            <th style="vertical-align:middle">ห้องพัก</th>
-                                                            <th style="vertical-align:middle">โซน</th>
+                                                            <th style="vertical-align:middle">โซน</br>(สถานที่รับ)</th>
                                                             <th style="vertical-align:middle">สถานที่ส่ง</th>
+                                                            <th style="vertical-align:middle">โซน</br>(สถานที่ส่ง)</th>
+                                                            <th style="vertical-align:middle">ห้องพัก</th>
+                                                            <th style="vertical-align:middle">รายละเอียด</th>
                                                         </tr>
                                                     <?php } else if ($row_products["ptypeid"] == 3) { ?>
                                                         <tr align="center">
@@ -494,11 +496,13 @@
                                                             <th style="vertical-align:middle">ผู้ใหญ่/เด็ก/ทารก/FOC</th>
                                                             <th style="vertical-align:middle">หมายเลขรถ/</br>ป้ายทะเบียน</th>
                                                             <th style="vertical-align:middle">เวลารับ</th>
-                                                            <th style="vertical-align:middle">สถานที่รับ</th>
                                                             <th style="vertical-align:middle">จำนวน</br>รถ/ชั่วโมง</th>
-                                                            <th style="vertical-align:middle">ห้องพัก</th>
-                                                            <th style="vertical-align:middle">โซน</th>
+                                                            <th style="vertical-align:middle">สถานที่รับ</th>
+                                                            <th style="vertical-align:middle">โซน</br>(สถานที่รับ)</th>
                                                             <th style="vertical-align:middle">สถานที่ส่ง</th>
+                                                            <th style="vertical-align:middle">โซน</br>(สถานที่ส่ง)</th>
+                                                            <th style="vertical-align:middle">ห้องพัก</th>
+                                                            <th style="vertical-align:middle">รายละเอียด</th>
                                                         </tr>
                                                     <?php } else if ($row_products["ptypeid"] == 4) { ?>
                                                         <tr align="center">
@@ -510,7 +514,8 @@
                                                             <th style="vertical-align:middle">วันที่เช็คอิน</th>
                                                             <th style="vertical-align:middle">วันที่เช็คเอาท์</th>
                                                             <th style="vertical-align:middle">ผู้ใหญ่/เด็ก/ทารก/FOC</th>
-                                                            <th style="vertical-align:middle">ห้อง/เตียงเสริม/แชร์เตียง</th>
+                                                            <th style="vertical-align:middle">ห้อง/เตียงเสริม(ผู้ใหญ่)/</br>เตียงเสริม(เด็ก)/แชร์เตียง</th>
+                                                            <th style="vertical-align:middle">รายละเอียด</th>
                                                         </tr>
                                                     <?php } ?>
                                                 </thead>
@@ -520,19 +525,26 @@
                                                 $second_before = $row_products["ptypeid"];
                                             }
                                                 ?>
-                                                <?php if ($row_products["ptypeid"] == 1 || $row_products["ptypeid"] == 2) { ?>
+                                                <?php
+                                                if ($row_products["ptypeid"] == 1 || $row_products["ptypeid"] == 2) {
+                                                    # --- Pickup & Dropoff --- #
+                                                    $pickup_name = $row_products["pickup"] > '0' ? get_value('place', 'id', 'name', $row_products["pickup"], $mysqli_p) : "N/A";
+                                                    $zones_pickup_id = $row_products["pickup"] > '0' ? get_value('place', 'id', 'zones', $row_products["pickup"], $mysqli_p) : '0';
+                                                    $zones_pickup_name = $zones_pickup_id > '0' ? get_value('zones', 'id', 'name', $zones_pickup_id, $mysqli_p) : "N/A";
+                                                    $dropoff_name = $row_products["dropoff"] > '0' ? get_value('place', 'id', 'name', $row_products["dropoff"], $mysqli_p) : "N/A";
+                                                    $zones_dropoff_id = $row_products["dropoff"] > '0' ? get_value('place', 'id', 'zones', $row_products["dropoff"], $mysqli_p) : '0';
+                                                    $zones_dropoff_name = $zones_dropoff_id > '0' ? get_value('zones', 'id', 'name', $zones_dropoff_id, $mysqli_p) : "N/A";
+                                                ?>
                                                     <tr>
                                                         <td align="center">
                                                             <div class="custom-control custom-checkbox mb-3">
-                                                                <input type="checkbox" class="custom-control-input" id="check_confirm<?php echo $row_products["id"]; ?>" name="check_confirm<?php echo $row_products["id"]; ?>" value="1" 
-                                                                onclick="check_confirm_op('<?php echo $row_products['id']; ?>', '<?php echo $row_products['booking']; ?>', 'checkconfirm-op');" 
-                                                                <?php echo $row_products["status_confirm_op"] == 1 ? 'checked' : '' ; ?> <?php echo $row_products['invoice'] == '1'  ? 'disabled' : '' ; ?>>
+                                                                <input type="checkbox" class="custom-control-input" id="check_confirm<?php echo $row_products["id"]; ?>" name="check_confirm<?php echo $row_products["id"]; ?>" value="1" onclick="check_confirm_op('<?php echo $row_products['id']; ?>', '<?php echo $row_products['booking']; ?>', 'checkconfirm-op');" <?php echo $row_products["status_confirm_op"] == 1 ? 'checked' : ''; ?> <?php echo $row_products['invoice'] == '1'  ? 'disabled' : ''; ?>>
                                                                 <label class="custom-control-label" for="check_confirm<?php echo $row_products["id"]; ?>"></label>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <?php echo $row_products["pcsname"]; ?></br>: <?php echo $row_products["pcfname"]; ?>
-                                                            <?php if($row_products["edit_date"] == '1'){ ?>
+                                                            <?php if ($row_products["edit_date"] == '1') { ?>
                                                                 <div class="notify" style="z-index: 99999;"> <span class="heartbit"></span> <span class="point"></span> </div>
                                                             <?php } ?>
                                                         </td>
@@ -572,11 +584,33 @@
                                                             <a href="#add" title="add" id="add_pick_up(<?php echo $row_products['pickup_time']; ?>)" name="add_pick_up(<?php echo $row_products['pickup_time']; ?>)" onclick="check_add_pick_up('<?php echo $row_products['id']; ?>', '<?php echo $row_products['booking']; ?>', 'checkaddpick-up', <?php echo $status_time; ?>);">
                                                                 <i class="fas <?php echo $icon_time; ?>" style="color:<?php echo $color_icon_time; ?>"></i></a>
                                                         </td>
-                                                        <td align="center"><?php echo $row_products["pickup"] > '0' ? get_value('place', 'id', 'name', $row_products["pickup"], $mysqli_p) : "N/A"; ?></td>
+                                                        <td align="center"><?php echo $pickup_name; ?></td>
+                                                        <td align="center"><?php echo $zones_pickup_name; ?></td>
+                                                        <td align="center"><?php echo $dropoff_name; ?></td>
+                                                        <td align="center"><?php echo $zones_dropoff_name; ?></td>
                                                         <td align="center"><?php echo ($row_products["roomno"] != 0) ? $row_products["roomno"] : "N/A"; ?></td>
-                                                        <td align="center"><?php echo ($row_products["zones"] != 0) ? get_value("zones", "id", "name", $row_products["zones"], $mysqli_p) : "N/A"; ?></td>
-                                                        <td align="center"><?php echo $row_products["dropoff"] > '0' ? $row_products["place_name"] : "N/A"; ?></td>
+                                                        <td align="center"><a href="#" data-toggle="modal" data-target="#modalproducts<?php echo $row_products["id"]; ?>"><i class="fas fa-eye"></i></a></td>
                                                     </tr>
+                                                    <!-- modal content detail -->
+                                                    <div id="modalproducts<?php echo $row_products["id"]; ?>" class="modal" tabindex="-1" role="dialog" aria-labelledby="vcenter" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title" id="vcenter">รายละเอียด</h4>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <?php echo (!empty($row_products["bo_detail"])) ? '<p>' . nl2br($row_products["bo_detail"]) . '</p>' : 'ไม่มีข้อมูลรายละเอียด'; ?>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">ปิด</button>
+                                                                </div>
+                                                            </div>
+                                                            <!-- /.modal-content -->
+                                                        </div>
+                                                        <!-- /.modal-dialog -->
+                                                    </div>
+                                                    <!-- /.modal detail -->
                                                     <!--- Num adults, children, infant, foc --->
                                                     <?php
                                                     $num_adults = $num_adults + $row_products["adults"];
@@ -584,19 +618,26 @@
                                                     $num_infant = $num_infant + $row_products["infant"];
                                                     $num_foc = $num_foc + $row_products["foc"];
                                                     ?>
-                                                <?php } else if ($row_products["ptypeid"] == 3) { ?>
+                                                <?php
+                                                } else if ($row_products["ptypeid"] == 3) {
+                                                    # --- Pickup & Dropoff --- #
+                                                    $pickup_name = $row_products["pickup"] > '0' ? get_value('place', 'id', 'name', $row_products["pickup"], $mysqli_p) : "N/A";
+                                                    $zones_pickup_id = $row_products["pickup"] > '0' ? get_value('place', 'id', 'zones', $row_products["pickup"], $mysqli_p) : '0';
+                                                    $zones_pickup_name = $zones_pickup_id > '0' ? get_value('zones', 'id', 'name', $zones_pickup_id, $mysqli_p) : "N/A";
+                                                    $dropoff_name = $row_products["dropoff"] > '0' ? get_value('place', 'id', 'name', $row_products["dropoff"], $mysqli_p) : "N/A";
+                                                    $zones_dropoff_id = $row_products["dropoff"] > '0' ? get_value('place', 'id', 'zones', $row_products["dropoff"], $mysqli_p) : '0';
+                                                    $zones_dropoff_name = $zones_dropoff_id > '0' ? get_value('zones', 'id', 'name', $zones_dropoff_id, $mysqli_p) : "N/A";
+                                                ?>
                                                     <tr>
                                                         <td align="center">
                                                             <div class="custom-control custom-checkbox mb-3">
-                                                                <input type="checkbox" class="custom-control-input" id="check_confirm<?php echo $row_products["id"]; ?>" name="check_confirm<?php echo $row_products["id"]; ?>" value="1" 
-                                                                onclick="check_confirm_op('<?php echo $row_products['id']; ?>', '<?php echo $row_products['booking']; ?>', 'checkconfirm-op');" 
-                                                                <?php echo $row_products["status_confirm_op"] == 1 ? 'checked' : '' ; ?> <?php echo $row_products['invoice'] == '1'  ? 'disabled' : '' ; ?>>
+                                                                <input type="checkbox" class="custom-control-input" id="check_confirm<?php echo $row_products["id"]; ?>" name="check_confirm<?php echo $row_products["id"]; ?>" value="1" onclick="check_confirm_op('<?php echo $row_products['id']; ?>', '<?php echo $row_products['booking']; ?>', 'checkconfirm-op');" <?php echo $row_products["status_confirm_op"] == 1 ? 'checked' : ''; ?> <?php echo $row_products['invoice'] == '1'  ? 'disabled' : ''; ?>>
                                                                 <label class="custom-control-label" for="check_confirm<?php echo $row_products["id"]; ?>"></label>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <?php echo $row_products["pcsname"]; ?></br>: <?php echo $row_products["pcfname"]; ?>
-                                                            <?php if($row_products["edit_date"] == '1'){ ?>
+                                                            <?php if ($row_products["edit_date"] == '1') { ?>
                                                                 <div class="notify" style="z-index: 99999;"> <span class="heartbit"></span> <span class="point"></span> </div>
                                                             <?php } ?>
                                                         </td>
@@ -625,12 +666,34 @@
                                                                 <i class="fas <?php echo $icon_vans; ?>" style="color:<?php echo $color_icon_vans; ?>"></i></a>
                                                         </td>
                                                         <td><?php echo $row_products["pickup_time"]; ?></td>
-                                                        <td><?php echo $row_products["pickup"] > '0' ? get_value('place', 'id', 'name', $row_products["pickup"], $mysqli_p) : "N/A"; ?></td>
                                                         <td align="center"><?php echo number_format($row_products["no_cars"]) . "/" . number_format($row_products["no_hours"]); ?></td>
+                                                        <td align="center"><?php echo $pickup_name; ?></td>
+                                                        <td align="center"><?php echo $zones_pickup_name; ?></td>
+                                                        <td align="center"><?php echo $dropoff_name; ?></td>
+                                                        <td align="center"><?php echo $zones_dropoff_name; ?></td>
                                                         <td align="center"><?php echo ($row_products["roomno"] != 0) ? $row_products["roomno"] : "N/A"; ?></td>
-                                                        <td align="center"><?php echo ($row_products["zones"] != 0) ? get_value("zones", "id", "name", $row_products["zones"], $mysqli_p) : "N/A"; ?></td>
-                                                        <td align="center"><?php echo $row_products["dropoff"] > '0' ? $row_products["place_name"] : "N/A"; ?></td>
+                                                        <td align="center"><a href="#" data-toggle="modal" data-target="#modalproducts<?php echo $row_products["id"]; ?>"><i class="fas fa-eye"></i></a></td>
                                                     </tr>
+                                                    <!-- modal content detail -->
+                                                    <div id="modalproducts<?php echo $row_products["id"]; ?>" class="modal" tabindex="-1" role="dialog" aria-labelledby="vcenter" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title" id="vcenter">รายละเอียด</h4>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <?php echo (!empty($row_products["bo_detail"])) ? '<p>' . nl2br($row_products["bo_detail"]) . '</p>' : 'ไม่มีข้อมูลรายละเอียด'; ?>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">ปิด</button>
+                                                                </div>
+                                                            </div>
+                                                            <!-- /.modal-content -->
+                                                        </div>
+                                                        <!-- /.modal-dialog -->
+                                                    </div>
+                                                    <!-- /.modal detail -->
                                                     <!--- Num adults, children, infant, foc --->
                                                     <?php
                                                     $num_adults = $num_adults + $row_products["adults"];
@@ -642,15 +705,13 @@
                                                     <tr>
                                                         <td align="center">
                                                             <div class="custom-control custom-checkbox mb-3">
-                                                                <input type="checkbox" class="custom-control-input" id="check_confirm<?php echo $row_products["id"]; ?>" name="check_confirm<?php echo $row_products["id"]; ?>" value="1" 
-                                                                onclick="check_confirm_op('<?php echo $row_products['id']; ?>', '<?php echo $row_products['booking']; ?>', 'checkconfirm-op');" 
-                                                                <?php echo $row_products["status_confirm_op"] == 1 ? 'checked' : '' ; ?> <?php echo $row_products['invoice'] == '1'  ? 'disabled' : '' ; ?>>
+                                                                <input type="checkbox" class="custom-control-input" id="check_confirm<?php echo $row_products["id"]; ?>" name="check_confirm<?php echo $row_products["id"]; ?>" value="1" onclick="check_confirm_op('<?php echo $row_products['id']; ?>', '<?php echo $row_products['booking']; ?>', 'checkconfirm-op');" <?php echo $row_products["status_confirm_op"] == 1 ? 'checked' : ''; ?> <?php echo $row_products['invoice'] == '1'  ? 'disabled' : ''; ?>>
                                                                 <label class="custom-control-label" for="check_confirm<?php echo $row_products["id"]; ?>"></label>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <?php echo $row_products["pcsname"]; ?></br>: <?php echo $row_products["pcfname"]; ?>
-                                                            <?php if($row_products["edit_date"] == '1'){ ?>
+                                                            <?php if ($row_products["edit_date"] == '1') { ?>
                                                                 <div class="notify" style="z-index: 99999;"> <span class="heartbit"></span> <span class="point"></span> </div>
                                                             <?php } ?>
                                                         </td>
@@ -666,8 +727,29 @@
                                                         <td><span style="color:#2E8E9C"><?php echo $checkin_date; ?></span></td>
                                                         <td><span style="color:#2E8E9C"><?php echo $checkout_date; ?></span></td>
                                                         <td align="center"><?php echo number_format($row_products["adults"]) . "/" . number_format($row_products["children"]) . "/" . number_format($row_products["infant"]) . "/" . number_format($row_products["foc"]); ?></td>
-                                                        <td align="center"><?php echo number_format($row_products["no_rooms"]) . "/" . number_format($row_products["extra_beds"]) . "/" . number_format($row_products["share_bed"]); ?></td>
+                                                        <td align="center"><?php echo number_format($row_products["no_rooms"]) . "/" . number_format($row_products["extra_beds_adult"]) . "/" . number_format($row_products["extra_beds_child"]) . "/" . number_format($row_products["share_bed"]); ?></td>
+                                                        <td align="center"><a href="#" data-toggle="modal" data-target="#modalproducts<?php echo $row_products["id"]; ?>"><i class="fas fa-eye"></i></a></td>
                                                     </tr>
+                                                    <!-- modal content detail -->
+                                                    <div id="modalproducts<?php echo $row_products["id"]; ?>" class="modal" tabindex="-1" role="dialog" aria-labelledby="vcenter" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title" id="vcenter">รายละเอียด</h4>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <?php echo (!empty($row_products["bo_detail"])) ? '<p>' . nl2br($row_products["bo_detail"]) . '</p>' : 'ไม่มีข้อมูลรายละเอียด'; ?>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">ปิด</button>
+                                                                </div>
+                                                            </div>
+                                                            <!-- /.modal-content -->
+                                                        </div>
+                                                        <!-- /.modal-dialog -->
+                                                    </div>
+                                                    <!-- /.modal detail -->
                                                     <!--- Num adults, children, infant, foc --->
                                                     <?php
                                                     $num_adults = $num_adults + $row_products["adults"];
@@ -675,11 +757,11 @@
                                                     $num_infant = $num_infant + $row_products["infant"];
                                                     $num_foc = $num_foc + $row_products["foc"];
                                                     ?>
-                                                <?php } 
-                                                    $numrow_realtime++;
+                                                <?php }
+                                                $numrow_realtime++;
                                                 ?>
-                                        <?php
-                                         }
+                                            <?php
+                                        }
                                         // echo ($numrow_products > 0) ? '</tbody></table></div></div></div></div>' : '';
                                         if ($numrow_realtime != 1) {
                                             echo '</tbody></table></div></div></div></div>';

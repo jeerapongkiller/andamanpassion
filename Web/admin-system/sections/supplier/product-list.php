@@ -383,8 +383,7 @@ if (!empty($supplier)) {
                                                 <?php if ($ptype == 4) { ?><th colspan="2">ราคาต่อห้อง/คืน</th><?php } ?>
                                                 <?php if ($ptype == 1 || $ptype == 2) { ?><th colspan="2">ราคาเด็ก</th><?php } ?>
                                                 <?php if ($ptype == 1) { ?><th colspan="2">เช่าเหมาลำ</th><?php } ?>
-                                                <?php if ($ptype == 2) { ?><th colspan="2">ราคากลุ่ม</th><?php } ?>
-                                                <?php if ($ptype == 1 || $ptype == 2) { ?><th>จำนวนคน</th><?php } ?>
+                                                <?php if ($ptype == 1) { ?><th>จำนวนคน</th><?php } ?>
                                                 <?php if ($ptype == 1 || $ptype == 2) { ?><th colspan="2">รถรับส่ง</th><?php } ?>
                                                 <?php if ($ptype == 3) { ?><th colspan="2">ราคาต่อชั่วโมง</th><?php } ?>
                                                 <?php if ($ptype == 3) { ?><th>จำนวนชั่วโมง</th><?php } ?>
@@ -468,11 +467,7 @@ if (!empty($supplier)) {
                                                         <td align="center" width="7%"><?php echo $charter_1; ?></td>
                                                         <td align="center" width="7%" style="background-color:#FAB867"><?php echo $charter_2; ?></td><?php } ?>
 
-                                                    <?php if ($ptype == 2) { ?>
-                                                        <td align="center" width="7%"><?php echo $group_1; ?></td>
-                                                        <td align="center" width="7%" style="background-color:#FAB867"><?php echo $group_2; ?></td><?php } ?>
-
-                                                    <?php if ($ptype == 1 || $ptype == 2) { ?>
+                                                    <?php if ($ptype == 1) { ?>
                                                         <td align="center" width="7%"><?php echo $pax; ?></td><?php } ?>
 
                                                     <?php if ($ptype == 1 || $ptype == 2) { ?>

@@ -327,7 +327,10 @@
                                                 <th>ชื่อ-สกุล (ลูกค้า)</th>
                                                 <th>เบอร์โทรศัพท์ (ลูกค้า)</th>
                                                 <th>วันที่เที่ยว</th>
-                                                <th>ยอดเหลือ (%)</th>
+                                                <th>สินค้า</th>
+                                                <th>ผู้จัดทำ</th>
+                                                <th>โรงแรม</th>
+                                                <th>ยอดเหลือ</th>
                                                 <th>สถานะการส่งอีเมล์</th>
                                                 <th>สถานะการยืนยัน</th>
                                                 <th>แก้ไข</th>
@@ -489,6 +492,45 @@
                                                 $customer_fullname = !empty($row["customer_firstname"]) ? $row["customer_firstname"] . " " . $row["customer_lastname"] : '-';
                                                 $customer_mobile = !empty($row["customer_mobile"]) ? $row["customer_mobile"] : '-';
                                                 $products_TravelDate = $row["travel_date_min"] != "0000-00-00" ? date("Y-m-d", strtotime($row["travel_date_min"])) . "<br />(" . date("d F Y", strtotime($row["travel_date_min"])) . ")" : 'ไม่มีสินค้า';
+
+                                                $arr_products = array();
+                                                $arr_hotel = array();
+                                                $arr_price_balance = array();
+                                                $price_total = 0;
+
+                                                $query_products = "SELECT BP.*,
+                                                                    PCS.id as pcsID, PCS.name as pcsName,
+                                                                    PCF.id as pcfID, PCF.name as pcfName,
+                                                                    PT.id as ptID, PT.name_text_thai as ptName
+                                                                    FROM booking_products BP
+                                                                    LEFT JOIN products_category_first PCF
+                                                                        ON BP.products_category_first = PCF.id
+                                                                    LEFT JOIN products_category_second PCS
+                                                                        ON  BP.products_category_second = PCS.id
+                                                                    LEFT JOIN products_type PT
+                                                                        ON BP.products_type = PT.id
+                                                                    WHERE BP.id > 0 
+                                                                    AND BP.booking = '" . $row["id"] . "' ";
+                                                $procedural_statement_products = mysqli_prepare($mysqli_p, $query_products);
+                                                mysqli_stmt_execute($procedural_statement_products);
+                                                $result_products = mysqli_stmt_get_result($procedural_statement_products);
+                                                while ($row_products = mysqli_fetch_array($result_products, MYSQLI_ASSOC)) {
+                                                    $price_total = $price_total + $row_products["price_latest"];
+                                                    if ($row_products['products_type'] != '4') {
+                                                        array_push($arr_products, $row_products['pcsName']);
+                                                    } else {
+                                                        array_push($arr_hotel, $row_products['pcsName']);
+                                                    }
+                                                }
+
+                                                $query_payment = "SELECT SUM(amount_paid) as price_amount FROM payments_booking WHERE booking = '" . $row["id"] . "' ";
+                                                $result_payment = mysqli_query($mysqli_p, $query_payment);
+                                                $row_payment = mysqli_fetch_array($result_payment, MYSQLI_ASSOC);
+                                                $price_amount = $price_total - $row_payment['price_amount'];
+
+                                                $query_history = "SELECT *, MIN(`create_date`) FROM `booking_history` WHERE `booking` = '" . $row["id"] . "' ";
+                                                $result_history = mysqli_query($mysqli_p, $query_history);
+                                                $row_history = mysqli_fetch_array($result_history, MYSQLI_ASSOC);
                                             ?>
                                                 <tr>
                                                     <td align="center"><span class="label label-<?php echo $status_class; ?>"><?php echo $status_txt; ?></span></td>
@@ -498,7 +540,20 @@
                                                     <td align="center"><?php echo $customer_fullname; ?></td>
                                                     <td><?php echo $customer_mobile; ?></td>
                                                     <td align="center"><?php echo $products_TravelDate; ?></td>
-                                                    <td align="right"><?php echo "-"; ?></td>
+                                                    <td align="right"><?php
+                                                                            $count_products = count($arr_products);
+                                                                            for ($i = 0; $i < $count_products; $i++) {
+                                                                                echo $arr_products[$i] . '</br>';
+                                                                            }
+                                                                            ?></td>
+                                                    <td align="right"><?php echo get_value('employee', 'id', 'name', $row_history['employee'], $mysqli_p); ?></td>
+                                                    <td align="right"><?php
+                                                                            $count_hotel = count($arr_hotel);
+                                                                            for ($i = 0; $i < $count_hotel; $i++) {
+                                                                                echo $arr_hotel[$i] . '</br>';
+                                                                            }
+                                                                            ?></td>
+                                                    <td align="right"><?php echo number_format($price_amount); ?></td>
                                                     <td align="center"><span class="label label-<?php echo $status_email_class; ?>"><?php echo $status_email_txt; ?></span></td>
                                                     <td align="center"><span class="label label-<?php echo $status_comfirm_class; ?>"><?php echo $status_comfirm_txt; ?></span></td>
                                                     <td align="center"><a href="./?mode=booking/detail&id=<?php echo $row["id"]; ?>"><i class="fas fa-edit"></i></a></td>

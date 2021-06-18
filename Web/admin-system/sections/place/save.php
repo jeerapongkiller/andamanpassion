@@ -4,6 +4,7 @@
     $dp_name = !empty($_POST["dp_name"]) ? $_POST["dp_name"] : '';
     $dp_pickup = !empty($_POST["dp_pickup"]) ? $_POST["dp_pickup"] : '1';
     $dp_dropoff = !empty($_POST["dp_dropoff"]) ? $_POST["dp_dropoff"] : '1';
+    $bp_zones = !empty($_POST["bp_zones"]) ? $_POST["bp_zones"] : '0';
 
     $return_url = !empty($dp_id) ? '&id='.$dp_id : '';
     $message_alert = "error";
@@ -13,8 +14,8 @@
         if(empty($dp_id))
 	    {
             # ---- Insert to database ---- #
-            $query_place = "INSERT INTO place (status, name, pickup, dropoff, trash_deleted, last_edit_time)";
-            $query_place .= "VALUES (0, '', 0, 0, 0, now())";
+            $query_place = "INSERT INTO place (status, name, pickup, dropoff, zones, trash_deleted, last_edit_time)";
+            $query_place .= "VALUES (0, '', 0, 0, 0, 0, now())";
             $result = mysqli_query($mysqli_p, $query_place);
             $dp_id = mysqli_insert_id($mysqli_p);
         }
@@ -42,6 +43,10 @@
             $query .= " dropoff = ?,";
             $bind_types .= "i";
             array_push($params, $dp_dropoff);
+
+            $query .= " zones = ?,";
+            $bind_types .= "i";
+            array_push($params, $bp_zones);
 
             $query .= " trash_deleted = ?,";
             $bind_types .= "i";

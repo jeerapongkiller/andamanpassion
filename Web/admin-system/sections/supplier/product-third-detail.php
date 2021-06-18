@@ -234,7 +234,7 @@ $third_season = !empty($row["season"]) ? $row["season"] : '0';
                                     </div>
                                 <?php }
                                 if ($ptype == '2') { ?>
-                                    <div class="col-md-3 mb-3">
+                                    <!-- <div class="col-md-3 mb-3">
                                         <label for="third_group_1" id="label_third_group_1">ราคากลุ่ม ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
@@ -257,9 +257,10 @@ $third_season = !empty($row["season"]) ? $row["season"] : '0';
                                                                                                                                                                                                                                                                                                                         } ?>>
                                             <div class="invalid-feedback">กรุณาระบุราคากลุ่ม (ราคาขาย)</div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 <?php }
-                                if ($ptype == '1' || $ptype == '2') { ?>
+                                if ($ptype == '1' || $ptype == '2') {
+                                    if($ptype == '1') { ?>
                                     <div class="col-md-3 mb-3">
                                         <label for="third_pax" id="label_third_pax">จำนวนคน (<span style="color:#3DB3E4; font-weight:bold">ราคาเช่าเหมาลำ/ราคากลุ่ม</span>)</label>
                                         <div class="input-group">
@@ -272,6 +273,7 @@ $third_season = !empty($row["season"]) ? $row["season"] : '0';
                                             <div class="invalid-feedback">กรุณาระบุจำนวนคน</div>
                                         </div>
                                     </div>
+                                    <?php } ?>
                                     <div class="col-md-3 mb-3">
                                         <label for="third_transfer_1" id="label_third_transfer_1">ราคารถรับส่ง ( <span style="color:#FF0000; font-weight:bold">ราคาทุน</span> )</label>
                                         <div class="input-group">

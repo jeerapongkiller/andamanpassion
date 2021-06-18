@@ -164,9 +164,12 @@ if (!empty($_POST["ptype"]) && !empty($_POST["catethird"])) {
     <input type="hidden" name="bp_transfer_2" value="<?php echo $transfer_2; ?>">
     <input type="hidden" name="bp_extra_hour_2" value="<?php echo $extra_hour_2; ?>">
     <input type="hidden" name="bp_extrabeds_2" value="<?php echo $extrabeds_2; ?>">
+    <input type="hidden" name="bp_extrabeds_4" value="<?php echo $extrabeds_4; ?>">
     <input type="hidden" name="bp_sharingbed_2" value="<?php echo $sharingbed_2; ?>">
     <input type="hidden" name="bp_pax" value="<?php echo $pax; ?>">
     <input type="hidden" name="bp_hours_no" value="<?php echo $hours_no; ?>">
+    <input type="hidden" name="bp_season_no" value="<?php echo $bp_season_no; ?>">
+    <input type="hidden" name="bp_season" value="<?php echo $row_cate['season']; ?>">
 
     <div class="form-row">
         <?php if ($row_cate['rate_2'] > 0) { ?>
